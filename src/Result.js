@@ -14,7 +14,6 @@ import { InstantSearch } from 'react-instantsearch/native';
 import { Actions } from 'react-native-router-flux';
 import CarouselImage from './components/CarouselImage';
 import Dimensions from 'Dimensions';
-import PhotoView from 'react-native-photo-view';
 
 const moment = require('moment');
 
