@@ -2,29 +2,29 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ModalDropdown from 'react-native-modal-dropdown';
 import {
-  StyleSheet,
-  Text,
-  View,
-  ListView,
-  TextInput,
-  Image,
-  StatusBar,
-  Button,
-  Platform,
-  Dimensions,
-  TouchableHighlight,
+    StyleSheet,
+    Text,
+    View,
+    ListView,
+    TextInput,
+    Image,
+    StatusBar,
+    Button,
+    Platform,
+    Dimensions,
+    TouchableHighlight,
 
 } from 'react-native';
 import { InstantSearch } from 'react-instantsearch/native';
 import {
-  connectSearchBox,
-  connectInfiniteHits,
-  connectRefinementList,
-  connectStats,
-  connectMenu,
-  connectSortBy,
-  connectRange,
-  connectCurrentRefinements,
+    connectSearchBox,
+    connectInfiniteHits,
+    connectRefinementList,
+    connectStats,
+    connectMenu,
+    connectSortBy,
+    connectRange,
+    connectCurrentRefinements,
 } from 'react-instantsearch/connectors';
 import Highlight from './components/Highlight';
 import Spinner from './components/Spinner';
@@ -36,321 +36,322 @@ import { Actions } from 'react-native-router-flux';
 const { height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
-  maincontainer: {
-    ...Platform.select({
-      ios: {
-        marginTop: 63,
-      },
-      android: { marginTop: 50 },
-    }),
-    flex: 1,
-  },
-  items: {
-    ...Platform.select({
-      ios: {
-        height: height - 170,
-      },
-      android: { height: height - 185 },
-    }),
-  },
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
-  },
-  options: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
-    padding: 5,
-    borderBottomColor: 'gray',
-    borderBottomWidth: 1,
-  },
-  sortBy: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingLeft: 8,
-  },
-  sortByArrow: {
-    paddingLeft: 3,
-  },
-  searchBoxContainer: {
-    backgroundColor: '#162331',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  searchBox: {
-    backgroundColor: 'white',
-    height: 40,
-    borderWidth: 1,
-    padding: 10,
-    margin: 10,
-    flexGrow: 1,
-    ...Platform.select({
-      ios: {
-        borderRadius: 5,
-      },
-      android: {},
-    }),
-  },
-  itemContent: {
-    paddingLeft: 15,
-  },
-  itemName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    paddingBottom: 5,
-  },
-  itemType: {
-    fontSize: 13,
-    fontWeight: '200',
-    paddingBottom: 5,
-  },
-  itemPrice: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    paddingBottom: 5,
-  },
-  starRating: { alignSelf: 'flex-start' },
-  filters: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
+    maincontainer: {
+        ...Platform.select({
+            ios: {
+                marginTop: 63,
+            },
+            android: { marginTop: 50 },
+        }),
+        flex: 1,
+    },
+    items: {
+        ...Platform.select({
+            ios: {
+                height: height - 170,
+            },
+            android: { height: height - 185 },
+        }),
+    },
+    item: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'white',
+    },
+    options: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        backgroundColor: 'white',
+        padding: 5,
+        borderBottomColor: 'gray',
+        borderBottomWidth: 1,
+    },
+    sortBy: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingLeft: 8,
+    },
+    sortByArrow: {
+        paddingLeft: 3,
+    },
+    searchBoxContainer: {
+        backgroundColor: '#162331',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    searchBox: {
+        backgroundColor: 'white',
+        height: 40,
+        borderWidth: 1,
+        padding: 10,
+        margin: 10,
+        flexGrow: 1,
+        ...Platform.select({
+            ios: {
+                borderRadius: 5,
+            },
+            android: {},
+        }),
+    },
+    itemContent: {
+        paddingLeft: 15,
+    },
+    itemName: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        paddingBottom: 5,
+    },
+    itemType: {
+        fontSize: 13,
+        fontWeight: '200',
+        paddingBottom: 5,
+    },
+    itemPrice: {
+        fontSize: 15,
+        fontWeight: 'bold',
+        paddingBottom: 5,
+    },
+    starRating: { alignSelf: 'flex-start' },
+    filters: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
 });
 class Home extends Component {
-  static displayName = 'React Native example';
-  constructor(props) {
-    super(props);
-    this.onSearchStateChange = this.onSearchStateChange.bind(this);
-    this.state = {
-      searchState: this.props.searchState ? this.props.searchState : {},
-    };
-  }
+    static displayName = 'React Native example';
+    constructor(props) {
+        super(props);
+        this.onSearchStateChange = this.onSearchStateChange.bind(this);
+        this.state = {
+            searchState: this.props.searchState ? this.props.searchState : {},
+        };
+    }
 
-  componentWillReceiveProps() {}
+    componentWillReceiveProps() {}
 
-  onSearchStateChange(nextState) {
-    this.setState({ searchState: { ...this.state.searchState, ...nextState } });
-  }
+    onSearchStateChange(nextState) {
+        this.setState({ searchState: { ...this.state.searchState, ...nextState } });
+    }
 
-  render() {
-    return (
-      <View style={styles.maincontainer}>
-        <InstantSearch
-          appId="R80XXCZCBX"
-          apiKey="0f7ec5636fe0da292cf1870fc82d6516"
-          indexName="active-mutts"
-          searchState={this.state.searchState}
-          onSearchStateChange={this.onSearchStateChange}
-        >
-          <StatusBar backgroundColor="blue" barStyle="light-content" />
-          <ConnectedSearchBox />
+    render() {
+        return (
+            <View style={styles.maincontainer}>
+                <InstantSearch
+                    appId="R80XXCZCBX"
+                    apiKey={this.props.searchKey}
+                    indexName="active-mutts"
+                    searchState={this.state.searchState}
+                    onSearchStateChange={this.onSearchStateChange}
+                >
+                    <StatusBar backgroundColor="blue" barStyle="light-content" />
+                    <ConnectedSearchBox />
 
-          <View style={styles.options}>
-            <ConnectedStats />
-            <ConnectedSortBy
-              items={[
-                { value: 'active-mutts', label: 'Featured' },
-                { value: 'active-mutts-age-desc', label: 'Age desc' },
-                { value: 'active-mutts-age-asc', label: 'Age asc' },
-              ]}
-              defaultRefinement={'active-mutts'}
-            />
-            <Filters
-              searchState={this.state.searchState}
-              onSearchStateChange={this.onSearchStateChange}
-            />
-          </View>
-          <ConnectedHits />
-          <VirtualRefinementList attributeName="breed" />
-          <VirtualRange attributeName="age" />
-          <VirtualRefinementList attributeName="size" />
-          <VirtualRange attributeName="weight" />
-        </InstantSearch>
-      </View>
-    );
-  }
+                    <View style={styles.options}>
+                        <ConnectedStats />
+                        <ConnectedSortBy
+                            items={[
+                                { value: 'active-mutts', label: 'Featured' },
+                                { value: 'active-mutts-age-desc', label: 'Age desc' },
+                                { value: 'active-mutts-age-asc', label: 'Age asc' },
+                            ]}
+                            defaultRefinement={'active-mutts'}
+                        />
+                        <Filters
+                            searchState={this.state.searchState}
+                            onSearchStateChange={this.onSearchStateChange}
+                        />
+                    </View>
+                    <ConnectedHits />
+                    <VirtualRefinementList attributeName="breed" />
+                    <VirtualRange attributeName="age" />
+                    <VirtualRefinementList attributeName="size" />
+                    <VirtualRange attributeName="weight" />
+                </InstantSearch>
+            </View>
+        );
+    }
 }
 
 Home.propTypes = {
-  searchState: PropTypes.object,
+    searchState: PropTypes.object,
 };
 
 export default Home;
 
 class SearchBox extends Component {
-  render() {
-    return (
-      <View style={styles.searchBoxContainer}>
-        <Spinner left={60} />
-        <TextInput
-          style={styles.searchBox}
-          onChangeText={text => this.props.refine(text)}
-          value={this.props.currentRefinement}
-          placeholder={'Search a doggo...'}
-          clearButtonMode={'always'}
-          underlineColorAndroid={'white'}
-          spellCheck={false}
-          autoCorrect={false}
-          autoCapitalize={'none'}
-        />
-      </View>
-    );
-  }
+    render() {
+        return (
+            <View style={styles.searchBoxContainer}>
+                <Spinner left={60} />
+                <TextInput
+                    style={styles.searchBox}
+                    onChangeText={text => this.props.refine(text)}
+                    value={this.props.currentRefinement}
+                    placeholder={'Search a doggo...'}
+                    clearButtonMode={'always'}
+                    underlineColorAndroid={'white'}
+                    spellCheck={false}
+                    autoCorrect={false}
+                    autoCapitalize={'none'}
+                />
+            </View>
+        );
+    }
 }
 
 SearchBox.propTypes = {
-  refine: PropTypes.func.isRequired,
-  currentRefinement: PropTypes.string,
+    refine: PropTypes.func.isRequired,
+    currentRefinement: PropTypes.string,
 };
 
 const ConnectedSearchBox = connectSearchBox(SearchBox);
 
 class Hits extends Component {
-  onEndReached() {
-    if (this.props.hasMore) {
-      this.props.refine();
+    onEndReached() {
+        if (this.props.hasMore) {
+            this.props.refine();
+        }
     }
-  }
 
-  render() {
-    const ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2,
-    });
-    const hits = this.props.hits.length > 0
-      ? <View style={styles.items}>
-          <ListView
-            dataSource={ds.cloneWithRows(this.props.hits)}
-            renderRow={this._renderRow}
-            renderSeparator={this._renderSeparator}
-            onEndReached={this.onEndReached.bind(this)}
-          />
-        </View>
-      : null;
-    return hits;
-  }
+    render() {
+        const ds = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 !== r2,
+        });
+        const hits = this.props.hits.length > 0
+            ? <View style={styles.items}>
+                <ListView
+                    dataSource={ds.cloneWithRows(this.props.hits)}
+                    renderRow={this._renderRow}
+                    renderSeparator={this._renderSeparator}
+                    onEndReached={this.onEndReached.bind(this)}
+                />
+            </View>
+            : null;
+        return hits;
+    }
 
-  _renderRow = (hit, sectionId, rowId) =>
-    <View style={styles.item} key={rowId}>
-      <TouchableHighlight
-          onPress={() => {
-              Actions['Result']({
-                  searchState: this.props.searchState,
-                  onSearchStateChange: this.props.onSearchStateChange,
-                  hit: hit,
-              });
-          }}
-      >
-        <Image style={{ height: 100, width: 100 }} source={{ uri: hit.images[0] }} />
-      </TouchableHighlight>
-      <View style={styles.itemContent}>
-        <Text style={styles.itemName}>
-          <Highlight
-            attributeName="name"
-            hit={hit}
-            highlightProperty="_highlightResult"
-          />
-        </Text>
-        <Text style={styles.itemType}>
-          <Highlight
-            attributeName="size"
-            hit={hit}
-            highlightProperty="_highlightResult"
-          />, {hit.age ? hit.age : "?"} years
-        </Text>
-        <Text style={styles.itemPrice}>
-          {hit.breed}
-        </Text>
-      </View>
+    _renderRow = (hit, sectionId, rowId) =>
+        <View style={styles.item} key={rowId}>
+            <TouchableHighlight
+                onPress={() => {
+                    Actions['Result']({
+                        searchState: this.props.searchState,
+                        onSearchStateChange: this.props.onSearchStateChange,
+                        hit: hit,
+                        searchKey: this.props.searchKey,
+                    });
+                }}
+            >
+                <Image style={{ height: 100, width: 100 }} source={{ uri: hit.images ? hit.images[0] : "https://dogtrekker.com/userfiles//muttville(2).jpg" }} />
+            </TouchableHighlight>
+            <View style={styles.itemContent}>
+                <Text style={styles.itemName}>
+                    <Highlight
+                        attributeName="name"
+                        hit={hit}
+                        highlightProperty="_highlightResult"
+                    />
+                </Text>
+                <Text style={styles.itemType}>
+                    <Highlight
+                        attributeName="size"
+                        hit={hit}
+                        highlightProperty="_highlightResult"
+                    />, {hit.age ? hit.age : "?"} years
+                </Text>
+                <Text style={styles.itemPrice}>
+                    {hit.breed}
+                </Text>
+            </View>
 
-    </View>;
+        </View>;
 
-  _renderSeparator = (sectionID, rowID, adjacentRowHighlighted) =>
-    <View
-      key={`${sectionID}-${rowID}`}
-      style={{
-        height: adjacentRowHighlighted ? 4 : 1,
-        backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',
-      }}
-    />;
+    _renderSeparator = (sectionID, rowID, adjacentRowHighlighted) =>
+        <View
+            key={`${sectionID}-${rowID}`}
+            style={{
+                height: adjacentRowHighlighted ? 4 : 1,
+                backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',
+            }}
+        />;
 }
 
 Hits.propTypes = {
-  hits: PropTypes.array.isRequired,
-  refine: PropTypes.func.isRequired,
-  hasMore: PropTypes.bool.isRequired,
+    hits: PropTypes.array.isRequired,
+    refine: PropTypes.func.isRequired,
+    hasMore: PropTypes.bool.isRequired,
 };
 
 const ConnectedHits = connectInfiniteHits(Hits);
 const ConnectedStats = connectStats(({ nbHits }) =>
-  <Text style={{ paddingLeft: 8 }}>{nbHits} doggos found</Text>
+    <Text style={{ paddingLeft: 8 }}>{nbHits} doggos found</Text>
 );
 
 const ConnectedSortBy = connectSortBy(
-  ({ refine, items, currentRefinement }) => {
-    const icon = Platform.OS === 'ios'
-      ? <IosIcon
-          size={13}
-          name="ios-arrow-down"
-          color="#000"
-          style={styles.sortByArrow}
-        />
-      : <MaterialIcon
-          size={20}
-          name="arrow-drop-down"
-          color="#000"
-          style={styles.sortByArrow}
-        />;
-    return (
-      <View style={styles.sortBy}>
-        <ModalDropdown
-          animated={false}
-          defaultValue={
-            items.find(item => item.value === currentRefinement).label
-          }
-          onSelect={(index, value) =>
-            refine(items.find(item => item.label === value).value)}
-          options={items.map(item => item.label)}
-          renderRow={item => {
-            const itemValue = items.find(i => i.label === item).value;
-            return (
-              <Text
-                style={{
-                  fontSize: 13,
-                  fontWeight: itemValue === currentRefinement ? 'bold' : '200',
-                  padding: 10,
-                }}
-              >
-                {item}
-              </Text>
-            );
-          }}
-          dropdownStyle={{
-            width: 200,
-            height: 110,
-          }}
-          textStyle={{ fontSize: 15 }}
-        />
-        {icon}
-      </View>
-    );
-  }
+    ({ refine, items, currentRefinement }) => {
+        const icon = Platform.OS === 'ios'
+            ? <IosIcon
+                size={13}
+                name="ios-arrow-down"
+                color="#000"
+                style={styles.sortByArrow}
+            />
+            : <MaterialIcon
+                size={20}
+                name="arrow-drop-down"
+                color="#000"
+                style={styles.sortByArrow}
+            />;
+        return (
+            <View style={styles.sortBy}>
+                <ModalDropdown
+                    animated={false}
+                    defaultValue={
+                        items.find(item => item.value === currentRefinement).label
+                    }
+                    onSelect={(index, value) =>
+                        refine(items.find(item => item.label === value).value)}
+                    options={items.map(item => item.label)}
+                    renderRow={item => {
+                        const itemValue = items.find(i => i.label === item).value;
+                        return (
+                            <Text
+                                style={{
+                                    fontSize: 13,
+                                    fontWeight: itemValue === currentRefinement ? 'bold' : '200',
+                                    padding: 10,
+                                }}
+                            >
+                                {item}
+                            </Text>
+                        );
+                    }}
+                    dropdownStyle={{
+                        width: 200,
+                        height: 110,
+                    }}
+                    textStyle={{ fontSize: 15 }}
+                />
+                {icon}
+            </View>
+        );
+    }
 );
 
 const Filters = connectCurrentRefinements(
-  ({ items, searchState, onSearchStateChange }) =>
-    <Button
-      onPress={() =>
-        Actions.Filters({
-          searchState,
-          onSearchStateChange,
-        })}
-      title={`Filters (${items.length})`}
-      color="#162331"
-    />
+    ({ items, searchState, onSearchStateChange }) =>
+        <Button
+            onPress={() =>
+                Actions.Filters({
+                    searchState,
+                    onSearchStateChange,
+                })}
+            title={`Filters (${items.length})`}
+            color="#162331"
+        />
 );
 const VirtualRange = connectRange(() => null);
 const VirtualRefinementList = connectRefinementList(() => null);
