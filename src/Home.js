@@ -244,7 +244,7 @@ class Hits extends Component {
               });
           }}
       >
-        <Image style={{ height: 100, width: 100 }} source={{ uri: hit.images[0] }} />
+        <Image style={{ height: 100, width: 100 }} source={{ uri: hit.images ? hit.images[0] : "https://dogtrekker.com/userfiles//muttville(2).jpg" }} />
       </TouchableHighlight>
       <View style={styles.itemContent}>
         <Text style={styles.itemName}>
