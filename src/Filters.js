@@ -12,7 +12,6 @@ import {
 import { InstantSearch } from 'react-instantsearch/native';
 import {
   connectCurrentRefinements,
-  connectMenu,
   connectRange,
   connectRefinementList,
   connectSearchBox,

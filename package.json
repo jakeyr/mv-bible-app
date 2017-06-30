@@ -32,6 +32,8 @@
     "react-native-modal-dropdown": "^0.4.2",
     "react-native-router-flux": "^3.39.2",
     "react-native-star-rating": "^1.0.7",
+    "react-native-swiper": "^1.5.4",
+    "react-native-timeago": "^0.3.0",
     "react-native-vector-icons": "^4.0.1"
   }
 }

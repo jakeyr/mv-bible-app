@@ -12,6 +12,8 @@ import {
   Button,
   Platform,
   Dimensions,
+  TouchableHighlight,
+
 } from 'react-native';
 import { InstantSearch } from 'react-instantsearch/native';
 import {
@@ -233,7 +235,17 @@ class Hits extends Component {
 
   _renderRow = (hit, sectionId, rowId) =>
     <View style={styles.item} key={rowId}>
-      <Image style={{ height: 100, width: 100 }} source={{ uri: hit.images[0] }} />
+      <TouchableHighlight
+          onPress={() => {
+              Actions['Result']({
+                  searchState: this.props.searchState,
+                  onSearchStateChange: this.props.onSearchStateChange,
+                  hit: hit,
+              });
+          }}
+      >
+        <Image style={{ height: 100, width: 100 }} source={{ uri: hit.images[0] }} />
+      </TouchableHighlight>
       <View style={styles.itemContent}>
         <Text style={styles.itemName}>
           <Highlight
@@ -247,7 +259,7 @@ class Hits extends Component {
             attributeName="size"
             hit={hit}
             highlightProperty="_highlightResult"
-          />
+          />, {hit.age ? hit.age : "?"} years
         </Text>
         <Text style={styles.itemPrice}>
           {hit.breed}
