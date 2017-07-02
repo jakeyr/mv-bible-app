@@ -88,6 +88,13 @@ class Authorize extends Component {
     }
 
     render() {
+        // if we've already got a token, don't need login screen.
+        // skip straight to the mutts!!
+        //
+        if (this.props.searchKey) {
+            Actions.Home({searchKey: response.token, type: ActionConst.REPLACE });
+        }
+
         if (this.state.isLoading) {
             return (
                 <View style={styles.loadingView}>

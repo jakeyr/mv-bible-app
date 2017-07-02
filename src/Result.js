@@ -156,7 +156,7 @@ class Result extends Component {
                         )}
                     </Swiper>
                     <View style={styles.infoContainer}>
-                        <Text style={styles.itemName} numberOfLines={1}>{hit.name}</Text>
+                        <Text style={styles.itemName} numberOfLines={1}>{hit.name} ({hit.arn})</Text>
                     </View>
                     <View style={styles.infoContainer}>
                         <Text style={styles.infoText} numberOfLines={1}>{hit.breed} &#8226; {weightStr} &#8226; {ageStr}</Text>

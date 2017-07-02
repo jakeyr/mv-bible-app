@@ -15,6 +15,8 @@ export default class App extends Component {
 
         var searchKey = this.getOnboard().done();
 
+        console.log("checking login session, searchKey is present: ", searchKey ? true : false);
+
         return <Router>
             <Scene
                 key="root"
@@ -25,7 +27,7 @@ export default class App extends Component {
                 }}
                 titleStyle={{ color: 'white' }}
             >
-                <Scene key="Authorize" component={Authorize} title="Please log in"  />
+                <Scene key="Authorize" component={Authorize} title="Please log in" searchKey={searchKey} />
                 <Scene key="Home" component={Home} title="Muttville Bible" searchKey={searchKey} />
                 <Scene key="Filters" component={Filters} title="Filters" searchKey={searchKey} />
                 <Scene key="Size" component={Size} title="Size" duration={1} searchKey={searchKey} />
@@ -38,7 +40,7 @@ export default class App extends Component {
     }
 
     async getOnboard() {
-        const onboard = await AsyncStorage.getItem('@auth:token');
+        const onboard = await AsyncStorage.getItem('@auth:token', (token) => console.log("retrieved token:  ",token));
         return onboard;
     }
 }

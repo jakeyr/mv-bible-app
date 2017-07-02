@@ -261,6 +261,11 @@ class Hits extends Component {
                         hit={hit}
                         highlightProperty="_highlightResult"
                     />
+                    &nbsp;(<Highlight
+                        attributeName="arn"
+                        hit={hit}
+                        highlightProperty="_highlightResult"
+                    />)
                 </Text>
                 <Text style={styles.itemType}>
                     <Highlight
