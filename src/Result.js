@@ -161,12 +161,13 @@ class Result extends Component {
                     <View style={styles.infoContainer}>
                         <Text style={styles.infoText} numberOfLines={1}>{hit.breed} &#8226; {weightStr} &#8226; {ageStr}</Text>
                     </View>
-                    {hit.comments.map((comment,index) =>
-                        <View style={styles.commentContainer} key={index}>
-                            <Text style={styles.commentHeader}>{comment.author} ({moment(comment.time*1000).fromNow()})</Text>
-                            <Text style={styles.commentText}>{comment.comment}</Text>
-                        </View>
-                    )}
+                    {hit.comments
+                        ? (hit.comments.map((comment,index) => <View style={styles.commentContainer} key={index}>
+                                <Text style={styles.commentHeader}>{comment.author} ({moment(comment.time*1000).fromNow()})</Text>
+                                <Text style={styles.commentText}>{comment.comment}</Text>
+                            </View>))
+                        : <View style={styles.commentContainer}><Text>No Comments</Text></View>
+                    }
                 </ScrollView>
             </InstantSearch>
         </View>
