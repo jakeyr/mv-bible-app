@@ -78,7 +78,7 @@ class Filters extends Component {
             <View style={styles.mainContainer}>
                 <InstantSearch
                     appId="R80XXCZCBX"
-                    apiKey="0f7ec5636fe0da292cf1870fc82d6516"
+                    apiKey={this.props.searchKey}
                     indexName="active-mutts"
                     onSearchStateChange={this.onSearchStateChange}
                     searchState={this.state.searchState}

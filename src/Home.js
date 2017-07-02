@@ -120,8 +120,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
 });
+
 class Home extends Component {
     static displayName = 'React Native example';
+
     constructor(props) {
         super(props);
         this.onSearchStateChange = this.onSearchStateChange.bind(this);
@@ -160,11 +162,12 @@ class Home extends Component {
                             defaultRefinement={'active-mutts'}
                         />
                         <Filters
+                            searchKey={this.props.searchKey}
                             searchState={this.state.searchState}
                             onSearchStateChange={this.onSearchStateChange}
                         />
                     </View>
-                    <ConnectedHits />
+                    <ConnectedHits searchKey={this.props.searchKey} />
                     <VirtualRefinementList attributeName="breed" />
                     <VirtualRange attributeName="age" />
                     <VirtualRefinementList attributeName="size" />
@@ -190,7 +193,7 @@ class SearchBox extends Component {
                     style={styles.searchBox}
                     onChangeText={text => this.props.refine(text)}
                     value={this.props.currentRefinement}
-                    placeholder={'Search a doggo...'}
+                    placeholder={'Search a mutt...'}
                     clearButtonMode={'always'}
                     underlineColorAndroid={'white'}
                     spellCheck={false}
@@ -210,6 +213,10 @@ SearchBox.propTypes = {
 const ConnectedSearchBox = connectSearchBox(SearchBox);
 
 class Hits extends Component {
+    construct(props) {
+        this._renderRow = this.bind._renderRow(this);
+    }
+
     onEndReached() {
         if (this.props.hasMore) {
             this.props.refine();
@@ -237,7 +244,7 @@ class Hits extends Component {
         <View style={styles.item} key={rowId}>
             <TouchableHighlight
                 onPress={() => {
-                    Actions['Result']({
+                    Actions.Result({
                         searchState: this.props.searchState,
                         onSearchStateChange: this.props.onSearchStateChange,
                         hit: hit,
@@ -266,7 +273,6 @@ class Hits extends Component {
                     {hit.breed}
                 </Text>
             </View>
-
         </View>;
 
     _renderSeparator = (sectionID, rowID, adjacentRowHighlighted) =>
@@ -287,7 +293,7 @@ Hits.propTypes = {
 
 const ConnectedHits = connectInfiniteHits(Hits);
 const ConnectedStats = connectStats(({ nbHits }) =>
-    <Text style={{ paddingLeft: 8 }}>{nbHits} doggos found</Text>
+    <Text style={{ paddingLeft: 8 }}>{nbHits} mutts found</Text>
 );
 
 const ConnectedSortBy = connectSortBy(
@@ -342,11 +348,12 @@ const ConnectedSortBy = connectSortBy(
 );
 
 const Filters = connectCurrentRefinements(
-    ({ items, searchState, onSearchStateChange }) =>
+    ({ items, searchState, onSearchStateChange, searchKey }) =>
         <Button
             onPress={() =>
                 Actions.Filters({
                     searchState,
+                    searchKey,
                     onSearchStateChange,
                 })}
             title={`Filters (${items.length})`}

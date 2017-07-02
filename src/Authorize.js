@@ -6,24 +6,37 @@ import {
     Platform,
     Dimensions,
     ActivityIndicator,
+    AsyncStorage,
 } from 'react-native';
 
-import { Actions } from 'react-native-router-flux';
+import {Actions, ActionConst} from 'react-native-router-flux';
 import Login from 'react-native-simple-login';
 import globalVariables from '../globals'
 import PropTypes from "react-native";
 
-const { height } = Dimensions.get('window');
+const { height,width } = Dimensions.get('window');
+
+const barSize = Platform.select({ios: 63, android: 50});
 
 const styles = StyleSheet.create({
-    maincontainer: {
-        ...Platform.select({
-            ios: {
-                marginTop: 63,
-            },
-            android: { marginTop: 50 },
-        }),
+    loadingView : {
         flex: 1,
+        marginTop: barSize,
+        marginBottom: barSize,
+        width: width,
+        height: height,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    indicatorText1: {
+        // width: width,
+        fontSize: 20,
+        paddingBottom: 10,
+        fontWeight: '200',
+    },
+    indicatorText2: {
+        // width: width,
+        paddingBottom: 20,
     },
 });
 
@@ -42,6 +55,8 @@ class Authorize extends Component {
 
     _onLogin(email, password) {
 
+        var that = this;
+
         fetch(globalVariables.authUrl, {
             method: 'POST',
             headers: {
@@ -54,15 +69,17 @@ class Authorize extends Component {
             })
         })
             .then((response) => response.json())
-            // .then(function(response) { console.info(response); return response})
-            // .then((response) => Actions['root'].refresh({searchKey : token}))
-            .then((response) => Actions['Home']({searchKey : response.token}))
-            .then((response) => this.setState({isLoading: false}))
+            .then(function(response) {
+                AsyncStorage.setItem('@auth:token', response.token, function () {
+                    console.info("setting up token in storage ", response.token);
+                    that.setState({isLoading: false});
+                    Actions.Home({searchKey: response.token, type: ActionConst.REPLACE });
+                }).done();
+            })
             .catch((error) => {
-                console.log(error);
+                console.info(error);
                 this.setState({isLoading: false});
             });
-
         this.setState({isLoading: true})
     };
 
@@ -73,10 +90,10 @@ class Authorize extends Component {
     render() {
         if (this.state.isLoading) {
             return (
-                <View style={{height: height}}>
-                    <ActivityIndicator animating={true}>
-                        <Text>Hold on to yer butts please...</Text>
-                    </ActivityIndicator>
+                <View style={styles.loadingView}>
+                    <Text style={styles.indicatorText1} >Contacting Petpoint</Text>
+                    <Text style={styles.indicatorText2} >Let&rsquo;s get to those mutts!</Text>
+                    <ActivityIndicator size="large" animating={true} />
                 </View>
             );
         } else {

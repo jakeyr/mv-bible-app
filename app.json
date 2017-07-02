@@ -1,5 +1,15 @@
 {
-  "expo": {
-    "sdkVersion": "17.0.0"
-  }
+   "expo": {
+    "name": "Muttville Bible",
+    "icon": "https://i.imgur.com/ubYuZep.png",
+    "version": "1.0.0",
+    "slug": "muttville-bible",
+    "sdkVersion": "17.0.0",
+    "ios": {
+      "bundleIdentifier": "org.muttville.bible"
+    },
+    "android": {
+      "package": "org.muttville.bible"
+    }
+   }
 }

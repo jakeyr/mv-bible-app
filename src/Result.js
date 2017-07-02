@@ -137,7 +137,7 @@ class Result extends Component {
         return <View style={styles.maincontainer}>
             <InstantSearch
                 appId="R80XXCZCBX"
-                apiKey="0f7ec5636fe0da292cf1870fc82d6516"
+                apiKey={this.props.searchKey}
                 indexName="active-mutts"
                 searchState={this.state.searchState}
                 onSearchStateChange={this.onSearchStateChange}

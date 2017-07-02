@@ -59,18 +59,20 @@ class Filters extends Component {
   }
 
   render() {
+    console.log(this.props)
     return (
       <View style={styles.mainContainer}>
         <InstantSearch
           appId="R80XXCZCBX"
-          apiKey="0f7ec5636fe0da292cf1870fc82d6516"
+          apiKey={this.props.searchKey}
           indexName="active-mutts"
           onSearchStateChange={this.onSearchStateChange}
           searchState={this.state.searchState}
         >
           <ConnectedRefinements
-            searchState={this.state.searchState}
-            onSearchStateChange={this.onSearchStateChange}
+              searchKey={this.props.searchKey}
+              searchState={this.state.searchState}
+              onSearchStateChange={this.onSearchStateChange}
           />
           <VirtualRefinementList attributeName="breed" />
           <VirtualRefinementList attributeName="size" />
@@ -86,6 +88,7 @@ class Filters extends Component {
 Filters.propTypes = {
   searchState: PropTypes.object,
   onSearchStateChange: PropTypes.func.isRequired,
+  searchKey: PropTypes.string.isRequired
 };
 
 class Refinements extends React.Component {
@@ -135,6 +138,7 @@ class Refinements extends React.Component {
       ? <TouchableHighlight
           onPress={() => {
             Actions[refinement]({
+              searchKey: this.props.searchKey,
               searchState: this.props.searchState,
               onSearchStateChange: this.props.onSearchStateChange,
             });
