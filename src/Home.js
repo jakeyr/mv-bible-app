@@ -109,10 +109,11 @@ const styles = StyleSheet.create({
         flex:1,
         flexDirection: 'row',
         alignItems: 'center',
+        paddingBottom: 5,
     },
     itemName: {
         fontSize: 22,
-        fontWeight: 'normal',
+        fontWeight: 'bold',
     },
     itemArn: {
         fontSize: 22,
@@ -121,27 +122,30 @@ const styles = StyleSheet.create({
     itemType: {
         // fontSize: 13,
         // fontWeight: '200',
-        paddingBottom: 5,
         flex: 1,
         flexDirection: "row",
         justifyContent: "flex-start",
-        alignContent: "flex-start",
-        marginBottom: 0,
+        alignContent: "center",
+        marginTop: 5,
         width: width - 120,
         flexWrap: 'wrap',
     },
     itemPrice: {
         fontSize: 15,
         fontWeight: 'bold',
+        paddingTop: 5,
+        paddingBottom: 5,
     },
     itemInfo: {
-        fontSize: 12,
+        fontSize: 10,
         paddingLeft: 2,
+        fontWeight: '200',
     },
     itemAttributes: {
         flexDirection: 'row',
         alignItems : 'center',
         paddingRight: 10,
+        paddingBottom: 5,
     },
     starRating: { alignSelf: 'flex-start' },
     filters: {
@@ -281,7 +285,7 @@ class Hits extends Component {
             }}
         >
             <View style={styles.item} key={rowId}>
-                <Image style={{ height: 100, width: 100 }} source={{ uri: hit.images ? hit.images[0] : globalVariables.placeHolderImage }} />
+                <Image style={{ height: 120, width: 100 }} source={{ uri: hit.images ? hit.images[0] : globalVariables.placeHolderImage }} />
                 <View style={styles.itemContent}>
                     <View style={styles.itemNameContainer}>
                         <Text style={styles.itemName}>
@@ -299,6 +303,14 @@ class Hits extends Component {
                         />)
                         </Text>
                     </View>
+                    <View
+                        style={{
+                            borderBottomColor: '#eeeeee',
+                            borderBottomWidth: 1,
+                            // marginLeft: 20,
+                            marginRight: 20,
+                        }}
+                    />
                     <View style={styles.itemType}>
                         {[
                             ["size", "", "paw"],
@@ -317,6 +329,14 @@ class Hits extends Component {
                             <Text style={styles.itemInfo}>{hit.gender}</Text>
                         </View>
                     </View>
+                    <View
+                        style={{
+                            borderBottomColor: '#eeeeee',
+                            borderBottomWidth: 1,
+                            // marginLeft: 20,
+                            marginRight: 20,
+                        }}
+                    />
                     <Text style={styles.itemPrice}>
                         {hit.breed}
                     </Text>
