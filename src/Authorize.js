@@ -67,23 +67,24 @@ class Authorize extends Component {
                 p: password,
             })
         })
-            .then((response) => response.json())
-            .then(function(response) {
-                AsyncStorage.setItem(globalVariables.tokenKey, response.token)
-                    .then(function (a, b) {
-                        console.info("setting up token in storage ", response.token, a, b);
-                        that.setState({isLoading: false});
-                        Actions.Home({searchKey: response.token, type: ActionConst.REPLACE});
-                    })
-                    .catch((error) => {
-                        console.warn(error);
-                    })
-                    .done();
-            })
-            .catch((error) => {
-                console.info(error);
-                this.setState({isLoading: false});
-            });
+        .then((response) => response.json())
+        .then(function(response) {
+            AsyncStorage.setItem(globalVariables.tokenKey, response.token)
+                .then(function () {
+                    console.info("setting up token in storage ", response.token);
+                    that.props.postLogin();
+                    that.setState({isLoading: false});
+                    Actions.Home({searchKey: response.token, type: ActionConst.REPLACE});
+                })
+                .catch((error) => {
+                    console.warn(error);
+                })
+                .done();
+        })
+        .catch((error) => {
+            console.info(error);
+            this.setState({isLoading: false});
+        });
         this.setState({isLoading: true})
     };
 
@@ -96,11 +97,13 @@ class Authorize extends Component {
         // skip straight to the mutts!!
         //
         AsyncStorage.getItem(globalVariables.tokenKey)
-            .then((value) => {
-                if (value) {
-                    Actions.Home({searchKey: value, type: ActionConst.REPLACE})
-                }
-            });
+        .then((value) => {
+            if (value) {
+                console.log("found token in storage, skipping to app!");
+                this.props.postLogin();
+                Actions.Home({searchKey: value, type: ActionConst.REPLACE})
+            }
+        });
 
         if (this.state.isLoading) {
             return (

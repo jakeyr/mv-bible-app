@@ -14,14 +14,13 @@ import { InstantSearch } from 'react-instantsearch/native';
 import { Actions } from 'react-native-router-flux';
 import CarouselImage from './components/CarouselImage';
 import Dimensions from 'Dimensions';
+import Icon from 'react-native-vector-icons/Entypo';
+
+import globalVariables from '../globals'
 
 const moment = require('moment');
 
 const {width, height} = Dimensions.get('window');
-
-const globalVariables = {
-    textColor: "black",
-}
 
 const styles = StyleSheet.create({
     carousel: {
@@ -151,9 +150,11 @@ class Result extends Component {
                 >
                     <StatusBar backgroundColor="blue" barStyle="light-content"/>
                     <Swiper activeDotStyle={{backgroundColor: 'white'}} height={500} horizontal={true}>
-                        {hit.images.map((image) =>
-                            <CarouselImage image={image} key={image} maxHeight={500}/>
-                        )}
+                        {hit.images
+                            ? hit.images.map((image) => <CarouselImage image={image} key={image} maxHeight={500}/>)
+                            : <CarouselImage image={globalVariables.placeHolderImage} key="placeholder" maxHeight={500}/>
+
+                        }
                     </Swiper>
                     <View style={styles.infoContainer}>
                         <Text style={styles.itemName} numberOfLines={1}>{hit.name} ({hit.arn})</Text>

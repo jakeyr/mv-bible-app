@@ -23,7 +23,6 @@ import {
     connectInfiniteHits,
     connectRefinementList,
     connectStats,
-    connectMenu,
     connectSortBy,
     connectRange,
     connectCurrentRefinements,
@@ -34,8 +33,9 @@ import Spinner from './components/Spinner';
 import IosIcon from 'react-native-vector-icons/Ionicons';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { Actions, ActionConst } from 'react-native-router-flux';
+import AwesomeIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const { height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
     maincontainer: {
@@ -99,21 +99,49 @@ const styles = StyleSheet.create({
     },
     itemContent: {
         paddingLeft: 15,
+        paddingRight: 15,
+        paddingTop: 10,
+        paddingBottom: 10,
+        flex: 1,
+        justifyContent: 'flex-start',
+    },
+    itemNameContainer : {
+        flex:1,
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     itemName: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        paddingBottom: 5,
+        fontSize: 22,
+        fontWeight: 'normal',
+    },
+    itemArn: {
+        fontSize: 22,
+        fontWeight: '100',
     },
     itemType: {
-        fontSize: 13,
-        fontWeight: '200',
+        // fontSize: 13,
+        // fontWeight: '200',
         paddingBottom: 5,
+        flex: 1,
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        alignContent: "flex-start",
+        marginBottom: 0,
+        width: width - 120,
+        flexWrap: 'wrap',
     },
     itemPrice: {
         fontSize: 15,
         fontWeight: 'bold',
-        paddingBottom: 5,
+    },
+    itemInfo: {
+        fontSize: 12,
+        paddingLeft: 2,
+    },
+    itemAttributes: {
+        flexDirection: 'row',
+        alignItems : 'center',
+        paddingRight: 10,
     },
     starRating: { alignSelf: 'flex-start' },
     filters: {
@@ -167,28 +195,8 @@ class Home extends Component {
                             searchState={this.state.searchState}
                             onSearchStateChange={this.onSearchStateChange}
                         />
-                        <Button
-                            title="Sign out"
-                            onPress={() => {
-                                 // Works on both iOS and Android
-                                 Alert.alert(
-                                   'Sign out?',
-                                   'Are you sure you want to sign out?',
-                                   [
-                                     {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-                                     {text: 'Sign Out', onPress: () => {
-                                             console.log('OK Pressed')
-                                             AsyncStorage.removeItem(globalVariables.tokenKey);
-                                             Actions.Authorize({type: ActionConst.REPLACE});
-                                         }
-                                     },
-                                   ],
-                                   { cancelable: false }
-                                )
-                            }}
-                        />
                         </View>
-                        <ConnectedHits searchKey={this.props.searchKey} />
+                    <ConnectedHits searchKey={this.props.searchKey} />
                     <VirtualRefinementList attributeName="breed" />
                     <VirtualRange attributeName="age" />
                     <VirtualRefinementList attributeName="size" />
@@ -262,44 +270,59 @@ class Hits extends Component {
     }
 
     _renderRow = (hit, sectionId, rowId) =>
-        <View style={styles.item} key={rowId}>
-            <TouchableHighlight
-                onPress={() => {
-                    Actions.Result({
-                        searchState: this.props.searchState,
-                        onSearchStateChange: this.props.onSearchStateChange,
-                        hit: hit,
-                        searchKey: this.props.searchKey,
-                    });
-                }}
-            >
-                <Image style={{ height: 100, width: 100 }} source={{ uri: hit.images ? hit.images[0] : "https://dogtrekker.com/userfiles//muttville(2).jpg" }} />
-            </TouchableHighlight>
-            <View style={styles.itemContent}>
-                <Text style={styles.itemName}>
-                    <Highlight
-                        attributeName="name"
-                        hit={hit}
-                        highlightProperty="_highlightResult"
-                    />
-                    &nbsp;(<Highlight
-                        attributeName="arn"
-                        hit={hit}
-                        highlightProperty="_highlightResult"
-                    />)
-                </Text>
-                <Text style={styles.itemType}>
-                    <Highlight
-                        attributeName="size"
-                        hit={hit}
-                        highlightProperty="_highlightResult"
-                    />, {hit.age ? hit.age : "?"} years
-                </Text>
-                <Text style={styles.itemPrice}>
-                    {hit.breed}
-                </Text>
+        <TouchableHighlight
+            onPress={() => {
+                Actions.Result({
+                    searchState: this.props.searchState,
+                    onSearchStateChange: this.props.onSearchStateChange,
+                    hit: hit,
+                    searchKey: this.props.searchKey,
+                });
+            }}
+        >
+            <View style={styles.item} key={rowId}>
+                <Image style={{ height: 100, width: 100 }} source={{ uri: hit.images ? hit.images[0] : globalVariables.placeHolderImage }} />
+                <View style={styles.itemContent}>
+                    <View style={styles.itemNameContainer}>
+                        <Text style={styles.itemName}>
+                            <Highlight
+                                attributeName="name"
+                                hit={hit}
+                                highlightProperty="_highlightResult"
+                            />
+                        </Text>
+                        <Text style={styles.itemArn}>
+                            &nbsp;(<Highlight
+                            attributeName="arn"
+                            hit={hit}
+                            highlightProperty="_highlightResult"
+                        />)
+                        </Text>
+                    </View>
+                    <View style={styles.itemType}>
+                        {[
+                            ["size", "", "paw"],
+                            ["age", "years", "clock"],
+                            ["weight", "lbs", "scale-bathroom"],
+                        ].map((tuple) => {
+                            return hit[tuple[0]]
+                                ? <View style={styles.itemAttributes} key={tuple[0]}>
+                                    <AwesomeIcon name={tuple[2]} size={15} color="black" />
+                                    <Text style={styles.itemInfo}>{hit[tuple[0]]} {tuple[1]}</Text>
+                                  </View>
+                                : <Text key={tuple[0]}/>
+                        })}
+                        <View style={styles.itemAttributes}>
+                            <AwesomeIcon name={"gender-" + hit.gender.toLowerCase()} size={15} color="black" />
+                            <Text style={styles.itemInfo}>{hit.gender}</Text>
+                        </View>
+                    </View>
+                    <Text style={styles.itemPrice}>
+                        {hit.breed}
+                    </Text>
+                </View>
             </View>
-        </View>;
+        </TouchableHighlight>
 
     _renderSeparator = (sectionID, rowID, adjacentRowHighlighted) =>
         <View
