@@ -14,7 +14,7 @@ import { InstantSearch } from 'react-instantsearch/native';
 import { Actions } from 'react-native-router-flux';
 import CarouselImage from './components/CarouselImage';
 import Dimensions from 'Dimensions';
-import Icon from 'react-native-vector-icons/Entypo';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import globalVariables from '../globals'
 
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
         height : height,
     },
     itemName : {
-        fontWeight:'200',
+        fontWeight:'800',
         fontSize: 25,
         marginTop: 10,
         marginBottom: 5,
@@ -57,37 +57,34 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     infoContainer: {
-        // flex: 1,
-        // flexDirection: 'row',
+        flex: 1,
+        flexDirection: 'row',
         backgroundColor: 'white',
         padding: 10,
-        shadowColor: 'black',
-        shadowOffset: { height: 2, width: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 1,
-        alignContent: 'center',
+        // shadowColor: 'black',
+        // shadowOffset: { height: 2, width: 1 },
+        // shadowOpacity: 0.1,
+        // shadowRadius: 1,
+        alignItems: 'center',
         marginBottom: 5,
+        justifyContent: 'center',
     },
     commentContainer: {
-        flex: 1,
-        flexDirection: 'column',
-        backgroundColor: 'white',
         padding: 10,
-        shadowColor: 'black',
-        shadowOffset: { height: 2, width: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 1,
-        alignContent: 'flex-start',
-        justifyContent: 'flex-start',
-        marginBottom: 5,
     },
     commentText: {
-        color: globalVariables.textColor,
+        color: globalVariables.textColorLight,
         fontSize: 14,
-        fontWeight: '200',
-        marginTop: 5,
-        marginBottom: 5,
-        textAlign: 'left',
+        fontWeight: '400',
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
+        flex:1,
+    },
+    commentHeader : {
+        fontSize: 16,
+        color: globalVariables.textColor,
+        fontWeight: '800',
+        paddingBottom: 5,
     },
     infoText: {
         color: globalVariables.textColor,
@@ -97,12 +94,42 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         textAlign: 'center',
     },
+    itemAttributes : {
+        flex:1,
+        // flexDirection:'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    itemInfoText1: {
+        fontSize: 25,
+        fontWeight: '300',
+        marginLeft: 5,
+        marginRight: 5,
+        color: "#f5b600",
+        flex: 1,
+        textAlign: 'center',
+    },
+    itemInfoText2: {
+        fontSize: 12,
+        fontWeight: '400',
+        marginLeft: 5,
+        marginRight: 5,
+        color: "#f5b600",
+        flex: 1,
+    },
 });
 
-const Box = () =>
+const Box = (props) =>
     <View style={styles.boxContainer}>
-        <Text style={styles.boxValue}>{this.props.value}</Text>
-        <Text style={styles.boxLabel}>{this.props.label}</Text>
+        <Text style={styles.boxValue}>{props.value}</Text>
+        <Text style={styles.boxLabel}>{props.label}</Text>
+    </View>
+
+const InfoIcon = (props) =>
+    <View style={styles.itemAttributes} key={props.icon}>
+        <Icon name={props.icon} size={35} color="#f5b600" />
+        <Text style={styles.itemInfoText1}>{props.text1 ? props.text1 : "?"} </Text>
+        <Text style={styles.itemInfoText2}>{props.text2}</Text>
     </View>
 
 class Result extends Component {
@@ -159,21 +186,46 @@ class Result extends Component {
                     <View style={styles.infoContainer}>
                         <Text style={styles.itemName} numberOfLines={1}>{hit.name} ({hit.arn})</Text>
                     </View>
-                    <View style={styles.infoContainer}>
-                        <Text style={styles.infoText} numberOfLines={1}>{hit.breed} &#8226; {weightStr} &#8226; {ageStr}</Text>
+                    <View style={{flex:1, paddingLeft:20, paddingRight:20, paddingTop: 10, paddingBottom: 10, backgroundColor: "#fffcef"}}>
+                        <View style={{flex:1, flexDirection:'row', marginTop: 10, marginBottom:10}}>
+                            <InfoIcon key="size" icon="paw" text1={hit.size} />
+                            <InfoIcon icon={"gender-" + hit.gender.toLowerCase()} text1={hit.gender} />
+                        </View>
+                        <View style={{flex:1, flexDirection:'row', marginTop: 10, marginBottom:10}}>
+                            <InfoIcon key="weight" icon="scale-balance" text1={hit.weight} text2="pounds" />
+                            <InfoIcon key="age" icon="clock" text1={hit.age} text2="years old" />
+                        </View>
                     </View>
-                    {hit.comments
-                        ? (hit.comments.map((comment,index) => <View style={styles.commentContainer} key={index}>
-                                <Text style={styles.commentHeader}>{comment.author} ({moment(comment.time*1000).fromNow()})</Text>
-                                <Text style={styles.commentText}>{comment.comment}</Text>
-                            </View>))
-                        : <View style={styles.commentContainer}><Text>No Comments</Text></View>
-                    }
+                    <View style={{marginTop: 5}}>
+                        {hit.comments
+                            ? (hit.comments.map((comment,index) =>
+                                <View key={"container"+index}>
+                                    <Comment comment={comment} key={"comment"+index} style={styles.commentContainer} />
+                                    {index !== (hit.comments.length - 1)
+                                        ? <View key={"hr" + index}
+                                            style={{
+                                                borderBottomColor: '#dddddd',
+                                                borderBottomWidth: 1,
+                                                marginLeft: 40,
+                                                marginRight: 40,
+                                                marginBottom: 15,
+                                            }}
+                                        />
+                                    : <View/>}
+                                </View>))
+                            : <View style={styles.commentContainer}><Text>No Comments</Text></View>}
+                    </View>
                 </ScrollView>
             </InstantSearch>
         </View>
     }
 }
+
+const Comment = (props) =>
+    <View style={styles.commentContainer}>
+        <Text style={styles.commentHeader}>{props.comment.author} ({moment(props.comment.time * 1000).fromNow()})</Text>
+        <Text style={styles.commentText}>{props.comment.comment.trim()}</Text>
+    </View>
 
 Result.propTypes = {
     searchState: PropTypes.object,

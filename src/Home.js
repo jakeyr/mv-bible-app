@@ -113,11 +113,13 @@ const styles = StyleSheet.create({
     },
     itemName: {
         fontSize: 22,
-        fontWeight: 'bold',
+        fontWeight: '800',
+        color: globalVariables.textColor,
     },
     itemArn: {
-        fontSize: 22,
-        fontWeight: '100',
+        fontSize: 18,
+        fontWeight: '200',
+        color: globalVariables.textColor,
     },
     itemType: {
         // fontSize: 13,
@@ -135,11 +137,13 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         paddingTop: 5,
         paddingBottom: 5,
+        color: globalVariables.textColor,
     },
     itemInfo: {
         fontSize: 10,
         paddingLeft: 2,
         fontWeight: '200',
+        color: globalVariables.textColorLight,
     },
     itemAttributes: {
         flexDirection: 'row',
@@ -305,7 +309,7 @@ class Hits extends Component {
                     </View>
                     <View
                         style={{
-                            borderBottomColor: '#eeeeee',
+                            borderBottomColor: '#f1f1f1',
                             borderBottomWidth: 1,
                             // marginLeft: 20,
                             marginRight: 20,
@@ -319,19 +323,19 @@ class Hits extends Component {
                         ].map((tuple) => {
                             return hit[tuple[0]]
                                 ? <View style={styles.itemAttributes} key={tuple[0]}>
-                                    <AwesomeIcon name={tuple[2]} size={15} color="black" />
+                                    <AwesomeIcon name={tuple[2]} size={15} color={globalVariables.textColorLight} />
                                     <Text style={styles.itemInfo}>{hit[tuple[0]]} {tuple[1]}</Text>
                                   </View>
                                 : <Text key={tuple[0]}/>
                         })}
                         <View style={styles.itemAttributes}>
-                            <AwesomeIcon name={"gender-" + hit.gender.toLowerCase()} size={15} color="black" />
+                            <AwesomeIcon name={"gender-" + hit.gender.toLowerCase()} size={15} color={globalVariables.textColorLight} />
                             <Text style={styles.itemInfo}>{hit.gender}</Text>
                         </View>
                     </View>
                     <View
                         style={{
-                            borderBottomColor: '#eeeeee',
+                            borderBottomColor: '#f1f1f1',
                             borderBottomWidth: 1,
                             // marginLeft: 20,
                             marginRight: 20,

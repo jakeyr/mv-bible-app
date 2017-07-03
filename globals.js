@@ -4,5 +4,7 @@ export default globalVariables = {
     muttvilleGold    : '#fdbf16',
     tokenKey         : "@auth:token",
     placeHolderImage : 'https://dogtrekker.com/userfiles//muttville(2).jpg',
-    textColor        : 'black',
+    textColor        : '#3f3f3f',
+    textColorLight   : '#616161',
+
 }
