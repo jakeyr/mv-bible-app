@@ -12,7 +12,6 @@ import {
 import {Actions, ActionConst} from 'react-native-router-flux';
 import Login from 'react-native-simple-login';
 import globalVariables from '../globals'
-import PropTypes from "react-native";
 
 const { height,width } = Dimensions.get('window');
 
@@ -70,11 +69,16 @@ class Authorize extends Component {
         })
             .then((response) => response.json())
             .then(function(response) {
-                AsyncStorage.setItem('@auth:token', response.token, function () {
-                    console.info("setting up token in storage ", response.token);
-                    that.setState({isLoading: false});
-                    Actions.Home({searchKey: response.token, type: ActionConst.REPLACE });
-                }).done();
+                AsyncStorage.setItem(globalVariables.tokenKey, response.token)
+                    .then(function (a, b) {
+                        console.info("setting up token in storage ", response.token, a, b);
+                        that.setState({isLoading: false});
+                        Actions.Home({searchKey: response.token, type: ActionConst.REPLACE});
+                    })
+                    .catch((error) => {
+                        console.warn(error);
+                    })
+                    .done();
             })
             .catch((error) => {
                 console.info(error);
@@ -91,9 +95,12 @@ class Authorize extends Component {
         // if we've already got a token, don't need login screen.
         // skip straight to the mutts!!
         //
-        if (this.props.searchKey) {
-            Actions.Home({searchKey: response.token, type: ActionConst.REPLACE });
-        }
+        AsyncStorage.getItem(globalVariables.tokenKey)
+            .then((value) => {
+                if (value) {
+                    Actions.Home({searchKey: value, type: ActionConst.REPLACE})
+                }
+            });
 
         if (this.state.isLoading) {
             return (
@@ -119,9 +126,5 @@ class Authorize extends Component {
         }
     }
 };
-
-Authorize.propTypes = {
-    // callback : PropTypes.func,
-}
 
 export default Authorize;

@@ -13,6 +13,8 @@ import {
     Platform,
     Dimensions,
     TouchableHighlight,
+    AsyncStorage,
+    Alert
 
 } from 'react-native';
 import { InstantSearch } from 'react-instantsearch/native';
@@ -26,12 +28,12 @@ import {
     connectRange,
     connectCurrentRefinements,
 } from 'react-instantsearch/connectors';
+import globalVariables from '../globals.js'
 import Highlight from './components/Highlight';
 import Spinner from './components/Spinner';
 import IosIcon from 'react-native-vector-icons/Ionicons';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-
-import { Actions } from 'react-native-router-flux';
+import { Actions, ActionConst } from 'react-native-router-flux';
 
 const { height } = Dimensions.get('window');
 
@@ -77,7 +79,7 @@ const styles = StyleSheet.create({
         paddingLeft: 3,
     },
     searchBoxContainer: {
-        backgroundColor: '#162331',
+        backgroundColor: globalVariables.muttvilleGold,
         flexDirection: 'row',
         alignItems: 'center',
     },
@@ -148,9 +150,8 @@ class Home extends Component {
                     searchState={this.state.searchState}
                     onSearchStateChange={this.onSearchStateChange}
                 >
-                    <StatusBar backgroundColor="blue" barStyle="light-content" />
+                    <StatusBar backgroundColor={globalVariables.muttvilleGold} barStyle="light-content" />
                     <ConnectedSearchBox />
-
                     <View style={styles.options}>
                         <ConnectedStats />
                         <ConnectedSortBy
@@ -166,8 +167,28 @@ class Home extends Component {
                             searchState={this.state.searchState}
                             onSearchStateChange={this.onSearchStateChange}
                         />
-                    </View>
-                    <ConnectedHits searchKey={this.props.searchKey} />
+                        <Button
+                            title="Sign out"
+                            onPress={() => {
+                                 // Works on both iOS and Android
+                                 Alert.alert(
+                                   'Sign out?',
+                                   'Are you sure you want to sign out?',
+                                   [
+                                     {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                                     {text: 'Sign Out', onPress: () => {
+                                             console.log('OK Pressed')
+                                             AsyncStorage.removeItem(globalVariables.tokenKey);
+                                             Actions.Authorize({type: ActionConst.REPLACE});
+                                         }
+                                     },
+                                   ],
+                                   { cancelable: false }
+                                )
+                            }}
+                        />
+                        </View>
+                        <ConnectedHits searchKey={this.props.searchKey} />
                     <VirtualRefinementList attributeName="breed" />
                     <VirtualRange attributeName="age" />
                     <VirtualRefinementList attributeName="size" />

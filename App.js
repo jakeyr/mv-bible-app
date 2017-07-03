@@ -1,4 +1,4 @@
-import { Router, Scene } from 'react-native-router-flux';
+import { Router, Scene, Action } from 'react-native-router-flux';
 import Home from './src/Home';
 import Authorize from './src/Authorize';
 import Filters from './src/Filters';
@@ -8,24 +8,23 @@ import Breed from './src/Breed';
 import Age from './src/Age';
 import Result from './src/Result'
 import React, { Component } from 'react';
-import { AsyncStorage } from 'react-native';
 
 export default class App extends Component {
     render() {
-
-        var searchKey = this.getOnboard().done();
-
-        console.log("checking login session, searchKey is present: ", searchKey ? true : false);
-
+        var searchKey = null;
         return <Router>
             <Scene
                 key="root"
                 navigationBarStyle={{
-                    backgroundColor: '#162331',
-                    borderColor: '#162331',
+                    backgroundColor: globalVariables.muttvilleGold,
+                    borderColor: globalVariables.muttvilleGold,
                     borderBottomColor: 'transparent',
                 }}
-                titleStyle={{ color: 'white' }}
+                titleStyle={{
+                    color: 'black',
+                    fontWeight: '800',
+                    // fontFamily : 'comicsans',
+                }}
             >
                 <Scene key="Authorize" component={Authorize} title="Please log in" searchKey={searchKey} />
                 <Scene key="Home" component={Home} title="Muttville Bible" searchKey={searchKey} />
@@ -37,10 +36,5 @@ export default class App extends Component {
                 <Scene key="Result" component={Result} title="Result" searchKey={searchKey} />
             </Scene>
         </Router>
-    }
-
-    async getOnboard() {
-        const onboard = await AsyncStorage.getItem('@auth:token', (token) => console.log("retrieved token:  ",token));
-        return onboard;
     }
 }
