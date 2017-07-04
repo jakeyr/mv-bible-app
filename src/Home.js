@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
 });
 
 class Home extends Component {
-    static displayName = 'React Native example';
+    static displayName = 'Home - results page';
 
     constructor(props) {
         super(props);
@@ -194,10 +194,10 @@ class Home extends Component {
                         <ConnectedSortBy
                             items={[
                                 { value: 'active-mutts', label: 'Newest first' },
-                                { value: 'active-mutts-age-desc', label: 'Oldest to youngest' },
-                                { value: 'active-mutts-age-asc', label: 'Youngest to oldest' },
-                                { value: 'active-mutts-weight-desc', label: 'Biggest to smallest' },
-                                { value: 'active-mutts-weight-asc', label: 'Smallest to Biggest' },
+                                { value: 'active-mutts-age-desc', label: 'Oldest first' },
+                                { value: 'active-mutts-age-asc', label: 'Youngest first' },
+                                { value: 'active-mutts-weight-desc', label: 'Biggest first' },
+                                { value: 'active-mutts-weight-asc', label: 'Smallest first' },
                             ]}
                             defaultRefinement={'active-mutts'}
                         />
