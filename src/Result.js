@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
 
 class Result extends Component {
 
-    static displayName = 'React Native example';
+    static displayName = 'Result page';
 
     constructor(props) {
         super(props);

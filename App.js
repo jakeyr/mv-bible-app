@@ -49,9 +49,7 @@ export default class App extends Component {
 
     menuButton = (props) =>
         <TouchableOpacity onPress={this.openControlPanel}>
-            <Icon name='menu'
-                  size={30}
-                  color={globalVariables.textColor}/>
+            <Icon name='menu' size={30} color={globalVariables.textColor}/>
         </TouchableOpacity>
 
     render() {
@@ -70,6 +68,7 @@ export default class App extends Component {
             <Router>
                 <Scene
                     key="root"
+                    leftButtonIconStyle = {{ tintColor: globalVariables.navTextColor }}
                     navigationBarStyle={{
                         backgroundColor: globalVariables.muttvilleGold,
                         borderColor: globalVariables.muttvilleGold,
@@ -78,12 +77,10 @@ export default class App extends Component {
                     titleStyle={{
                         color: globalVariables.navTextColor,
                         fontWeight: '800',
-                        // fontFamily : 'comicsans',
                     }}
-                    leftButtonIconStyle = {{ tintColor: globalVariables.navTextColor }}
                 >
                     <Scene key="Authorize"
-                           renderLeftButton={this.menuButton}
+                           renderLeftButton={() => {}} // disable menu for auth page
                            component={Authorize} title="Please log in" postLogin={this.postLogin} />
                     <Scene key="Home"
                            renderLeftButton={this.menuButton}
