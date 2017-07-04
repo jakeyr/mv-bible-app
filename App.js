@@ -73,6 +73,7 @@ export default class App extends Component {
                         backgroundColor: globalVariables.muttvilleGold,
                         borderColor: globalVariables.muttvilleGold,
                         borderBottomColor: 'transparent',
+                        borderBottomWidth: 0,
                     }}
                     titleStyle={{
                         color: globalVariables.navTextColor,

@@ -322,7 +322,7 @@ class Hits extends Component {
                         {[
                             ["size", "", "paw"],
                             ["age", "years", "clock"],
-                            ["weight", "lbs", "scale-bathroom"],
+                            ["weight", "lbs", "scale-balance"],
                         ].map((tuple) => {
                             return hit[tuple[0]]
                                 ? <View style={styles.itemAttributes} key={tuple[0]}>
@@ -404,7 +404,7 @@ const ConnectedSortBy = connectSortBy(
                                 style={{
                                     fontSize: 13,
                                     fontWeight: itemValue === currentRefinement ? 'bold' : '200',
-                                    padding: 10,
+                                    margin: 10,
                                 }}
                             >
                                 {item}
@@ -413,7 +413,8 @@ const ConnectedSortBy = connectSortBy(
                     }}
                     dropdownStyle={{
                         width: 200,
-                        height: 110,
+                        height: 182,
+                        flex:1,
                     }}
                     textStyle={{ fontSize: 15, color: globalVariables.textColor }}
                 />

@@ -7,4 +7,5 @@ export default globalVariables = {
     textColor        : '#3f3f3f',
     textColorLight   : '#616161',
     navTextColor     : "black",
+    skipLogin        : false,
 }

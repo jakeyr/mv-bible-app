@@ -56,6 +56,8 @@ class Authorize extends Component {
 
         var that = this;
 
+        console.log("login started", globalVariables.authUrl, email, password);
+
         fetch(globalVariables.authUrl, {
             method: 'POST',
             headers: {
@@ -69,6 +71,7 @@ class Authorize extends Component {
         })
         .then((response) => response.json())
         .then(function(response) {
+            console.log("response from server", response);
             AsyncStorage.setItem(globalVariables.tokenKey, response.token)
                 .then(function () {
                     console.info("setting up token in storage ", response.token);
@@ -93,16 +96,19 @@ class Authorize extends Component {
     }
 
     render() {
+        console.log("checking authorization status");
+
         // if we've already got a token, don't need login screen.
         // skip straight to the mutts!!
         //
         AsyncStorage.getItem(globalVariables.tokenKey)
         .then((value) => {
-            if (value) {
+            console.log("token from storage:", value, globalVariables.requireLogin && value);
+            if (value || globalVariables.skipLogin) {
                 console.log("found token in storage, skipping to app!");
                 this.props.postLogin();
-                Actions.Home({searchKey: value, type: ActionConst.REPLACE})
-            }
+                Actions.Home({searchKey: value, type: ActionConst.REPLACE});
+             }
         });
 
         if (this.state.isLoading) {
