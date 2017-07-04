@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
 });
 
 class Filters extends Component {
-    static displayName = 'React Native example';
+    static displayName = 'Age filter';
     constructor(props) {
         super(props);
         this.onSearchStateChange = this.onSearchStateChange.bind(this);
@@ -46,24 +46,26 @@ class Filters extends Component {
     render() {
         return (
             <View style={styles.mainContainer}>
-              <InstantSearch
-                  appId="R80XXCZCBX"
-                  apiKey="0f7ec5636fe0da292cf1870fc82d6516"
-                  indexName="active-mutts"
-                  onSearchStateChange={this.onSearchStateChange}
-                  searchState={this.state.searchState}
-              >
-                <View style={{ marginTop: 50 }}>
-                  <ConnectedRange attributeName="age" />
-                </View>
-                <Stats
-                    searchState={this.state.searchState}
+                <InstantSearch
+                    appId="R80XXCZCBX"
+                    apiKey={this.props.searchKey}
+                    indexName="active-mutts"
                     onSearchStateChange={this.onSearchStateChange}
-                />
-                <VirtualRefinementList attributeName="breed" />
-                <VirtualMenu attributeName="size" />
-                <VirtualSearchBox />
-              </InstantSearch>
+                    searchState={this.state.searchState}
+                >
+                    <View style={{ marginTop: 50 }}>
+                        <ConnectedRange attributeName="age" />
+                    </View>
+                    <Stats
+                        searchState={this.state.searchState}
+                        onSearchStateChange={this.onSearchStateChange}
+                        searchKey={this.props.searchKey}
+                    />
+                    <VirtualRefinementList attributeName="breed" />
+                    <VirtualRefinementList attributeName="size" />
+                    <VirtualRange attributeName="weight" />
+                    <VirtualSearchBox />
+                </InstantSearch>
             </View>
         );
     }
@@ -72,6 +74,7 @@ class Filters extends Component {
 Filters.propTypes = {
     searchState: PropTypes.object.isRequired,
     onSearchStateChange: PropTypes.func.isRequired,
+    searchKey: PropTypes.string.isRequired,
 };
 
 export default Filters;
@@ -156,5 +159,5 @@ Age.propTypes = {
 
 const VirtualRefinementList = connectRefinementList(() => null);
 const VirtualSearchBox = connectSearchBox(() => null);
-const VirtualMenu = connectMenu(() => null);
+const VirtualRange = connectRange(() => null);
 const ConnectedRange = connectRange(Age);

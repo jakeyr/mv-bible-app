@@ -12,8 +12,7 @@ import {
     Platform,
     Dimensions,
     TouchableHighlight,
-    AsyncStorage,
-    Alert
+    FlatList
 
 } from 'react-native';
 import { InstantSearch } from 'react-instantsearch/native';
@@ -171,8 +170,6 @@ class Home extends Component {
         };
     }
 
-    componentWillReceiveProps() {}
-
     onSearchStateChange(nextState) {
         this.setState({ searchState: { ...this.state.searchState, ...nextState } });
     }
@@ -253,10 +250,6 @@ SearchBox.propTypes = {
 const ConnectedSearchBox = connectSearchBox(SearchBox);
 
 class Hits extends Component {
-    construct(props) {
-        this._renderRow = this.bind._renderRow(this);
-    }
-
     onEndReached() {
         if (this.props.hasMore) {
             this.props.refine();
@@ -267,32 +260,38 @@ class Hits extends Component {
         const ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2,
         });
-        const hits = this.props.hits.length > 0
+        return this.props.hits.length > 0
             ? <View style={styles.items}>
-                <ListView
-                    dataSource={ds.cloneWithRows(this.props.hits)}
-                    renderRow={this._renderRow}
-                    renderSeparator={this._renderSeparator}
+                <FlatList
+                    data={this.props.hits}
+                    renderItem={this._renderRow}
                     onEndReached={this.onEndReached.bind(this)}
+                    keyExtractor={(item,index) => item.id}
+                    ItemSeparatorComponent={(highlighted) => <View
+                        style={{
+                            height: highlighted ? 1 : 1,
+                            backgroundColor: '#CCCCCC',
+                        }}
+                    />}
                 />
             </View>
             : null;
-        return hits;
     }
 
-    _renderRow = (hit, sectionId, rowId) =>
+    _renderRow = ({item: hit}) =>
         <TouchableHighlight
-            onPress={() => {
-                Actions.Result({
-                    searchState: this.props.searchState,
-                    onSearchStateChange: this.props.onSearchStateChange,
-                    hit: hit,
-                    searchKey: this.props.searchKey,
-                });
-            }}
+            onPress={() => Actions.Result({
+                searchState: this.props.searchState,
+                onSearchStateChange: this.props.onSearchStateChange,
+                hit: hit,
+                searchKey: this.props.searchKey,
+                refresh: this.props,
+            })}
+            key={hit.id}
         >
-            <View style={styles.item} key={rowId}>
-                <Image style={{ height: 120, width: 100 }} source={{ uri: hit.images ? hit.images[0] : globalVariables.placeHolderImage }} />
+            <View style={styles.item}>
+                <Image style={{height: 120, width: 100}}
+                       source={{uri: hit.images ? hit.images[0] : globalVariables.placeHolderImage}}/>
                 <View style={styles.itemContent}>
                     <View style={styles.itemNameContainer}>
                         <Text style={styles.itemName}>
@@ -326,13 +325,14 @@ class Hits extends Component {
                         ].map((tuple) => {
                             return hit[tuple[0]]
                                 ? <View style={styles.itemAttributes} key={tuple[0]}>
-                                    <AwesomeIcon name={tuple[2]} size={15} color={globalVariables.textColorLight} />
+                                    <AwesomeIcon name={tuple[2]} size={15} color={globalVariables.textColorLight}/>
                                     <Text style={styles.itemInfo}>{hit[tuple[0]]} {tuple[1]}</Text>
-                                  </View>
+                                </View>
                                 : <Text key={tuple[0]}/>
                         })}
                         <View style={styles.itemAttributes}>
-                            <AwesomeIcon name={"gender-" + hit.gender.toLowerCase()} size={15} color={globalVariables.textColorLight} />
+                            <AwesomeIcon name={"gender-" + hit.gender.toLowerCase()} size={15}
+                                         color={globalVariables.textColorLight}/>
                             <Text style={styles.itemInfo}>{hit.gender}</Text>
                         </View>
                     </View>
@@ -350,15 +350,6 @@ class Hits extends Component {
                 </View>
             </View>
         </TouchableHighlight>
-
-    _renderSeparator = (sectionID, rowID, adjacentRowHighlighted) =>
-        <View
-            key={`${sectionID}-${rowID}`}
-            style={{
-                height: adjacentRowHighlighted ? 4 : 1,
-                backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',
-            }}
-        />;
 }
 
 Hits.propTypes = {

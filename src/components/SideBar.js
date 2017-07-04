@@ -59,15 +59,13 @@ export default SideBar = (props) => <View
         height: height - 125,
         justifyContent: "flex-end",
     }}>
-        { props.loggedIn()
-            ? <MenuRow
-                onPress={() => alertButton(props)}
-                icon="log-out"
-                text="LOGOUT"
-                textStyle={{marginLeft: 15, fontWeight:'800',fontSize:18,color:globalVariables.textColor}}
-                containerStyle={styles.logoutButtonContainer}
-              />
-            : <View/> }
+        <MenuRow
+            onPress={() => alertButton(props)}
+            icon="log-out"
+            text="LOGOUT"
+            textStyle={{marginLeft: 15, fontWeight:'800',fontSize:18,color:globalVariables.textColor}}
+            containerStyle={styles.logoutButtonContainer}
+        />
     </View>
 </View>
 
@@ -79,11 +77,11 @@ const alertButton = (props) =>
             {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
             {
                 text: 'Sign Out', onPress: () => {
-                console.log('OK Pressed')
-                AsyncStorage.removeItem(globalVariables.tokenKey);
-                props.onSignOut();
-                Actions.Authorize({type: ActionConst.REPLACE});
-            }
+                    console.log('OK Pressed')
+                    AsyncStorage.removeItem(globalVariables.tokenKey);
+                    Actions.Authorize({type: ActionConst.REPLACE});
+                    props.onSignOut();
+                }
             },
 
         ],

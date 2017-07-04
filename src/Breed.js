@@ -87,6 +87,7 @@ class Filters extends Component {
                 <Stats
                     searchState={this.state.searchState}
                     onSearchStateChange={this.props.onSearchStateChange}
+                    searchKey={this.props.searchKey}
                 />
                 <VirtualSearchBox />
                 <VirtualRefinementList attributeName="size" />

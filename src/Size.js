@@ -87,8 +87,8 @@ class Filters extends Component {
                     <Stats
                         searchState={this.state.searchState}
                         onSearchStateChange={this.props.onSearchStateChange}
+                        searchKey={this.props.searchKey}
                     />
-                    <VirtualSearchBox />
                     <VirtualRefinementList attributeName="breed" />
                     <VirtualRange attributeName="weight" />
                     <VirtualRange attributeName="age" />
@@ -101,6 +101,7 @@ class Filters extends Component {
 Filters.propTypes = {
     searchState: PropTypes.object,
     onSearchStateChange: PropTypes.func.isRequired,
+    searchKey: PropTypes.string,
 };
 
 export default Filters;
@@ -120,7 +121,7 @@ class RefinementList extends Component {
         const ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2,
         });
-        const { items, searchForItems } = this.props;
+        const { items } = this.props;
         const facets = items.length > 0
             ? <ListView
                 enableEmptySections={true}
@@ -132,20 +133,6 @@ class RefinementList extends Component {
             : null;
         return (
             <View style={styles.searchBoxContainer}>
-                <TextInput
-                    style={styles.searchBox}
-                    onChangeText={text => {
-                        this.saveQuery(text);
-                        searchForItems(text);
-                    }}
-                    placeholder={'Search a size...'}
-                    value={this.state.query}
-                    clearButtonMode={'always'}
-                    underlineColorAndroid={'white'}
-                    spellCheck={false}
-                    autoCorrect={false}
-                    autoCapitalize={'none'}
-                />
                 {facets}
             </View>
         );
@@ -155,13 +142,6 @@ class RefinementList extends Component {
         const icon = refinement.isRefined
             ? <Icon name="check-square-o" color="#e29b0b" />
             : <Icon name="square-o" color="#000" />;
-        const label = this.props.isFromSearch
-            ? <Highlight
-                attributeName="label"
-                hit={refinement}
-                highlightProperty="_highlightResult"
-            />
-            : refinement.label;
         return (
             <TouchableHighlight
                 onPress={() => {
@@ -172,7 +152,7 @@ class RefinementList extends Component {
             >
                 <View style={styles.item}>
                     <Text style={refinement.isRefined ? styles.itemRefined : {}}>
-                        {label}
+                        {refinement.label}
                     </Text>
                     {icon}
                 </View>

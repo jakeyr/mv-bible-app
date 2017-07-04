@@ -23,22 +23,6 @@ const styles = {
 
 export default class App extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            loggedIn : false,
-        }
-    }
-
-    postLogin = () => {
-        this.setState({loggedIn: true});
-    }
-
-    postLogout = () => {
-        this.setState({loggedIn: false});
-        this.closeControlPanel();
-    }
-
     closeControlPanel = () => {
         this._drawer.close()
     };
@@ -52,8 +36,9 @@ export default class App extends Component {
             <Icon name='menu' size={30} color={globalVariables.textColor}/>
         </TouchableOpacity>
 
-    render() {
-        return <Drawer
+    render = () =>
+        <Drawer
+            key="drawer"
             ref={(ref) => this._drawer = ref}
             tapToClose={true}
             openDrawerOffset={0.6} // 20% gap on the right side of drawer
@@ -63,8 +48,8 @@ export default class App extends Component {
             tweenHandler={(ratio) => ({
                 main: {opacity: (2 - ratio) / 2}
             })}
-            content={<SideBar loggedIn={() => this.state.loggedIn} onSignOut={this.postLogout} />}
-    >
+            content={<SideBar onSignOut={this.closeControlPanel} />}
+        >
             <Router>
                 <Scene
                     key="root"
@@ -80,13 +65,17 @@ export default class App extends Component {
                         fontWeight: '800',
                     }}
                 >
+
                     <Scene key="Authorize"
-                           renderLeftButton={() => {}} // disable menu for auth page
-                           component={Authorize} title="Please log in" postLogin={this.postLogin} />
+                           renderLeftButton={() => null}
+                           component={Authorize}
+                           title="Please log in" />
                     <Scene key="Home"
                            renderLeftButton={this.menuButton}
-                           component={Home} title="Muttville Bible" />
-                    <Scene key="Filters" component={Filters} title="Filters"  />
+                           component={Home} title="Muttville Bible"
+                           leftButtonIconStyle = {{ tintColor: globalVariables.navTextColor }}
+                    />
+                    <Scene key="Filters" component={Filters} title="Filters" />
                     <Scene key="Size" component={Size} title="Size" duration={1}  />
                     <Scene key="Breed" component={Breed} title="Breed" duration={1}  />
                     <Scene key="Weight" component={Price} title="Weight" duration={1}  />
@@ -95,6 +84,4 @@ export default class App extends Component {
                 </Scene>
             </Router>
         </Drawer>
-
-    }
 }

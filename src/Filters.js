@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
 });
 
 class Filters extends Component {
-  static displayName = 'React Native example';
+  static displayName = 'Filters page';
   constructor(props) {
     super(props);
     this.onSearchStateChange = this.onSearchStateChange.bind(this);
@@ -59,7 +59,6 @@ class Filters extends Component {
   }
 
   render() {
-    console.log(this.props)
     return (
       <View style={styles.mainContainer}>
         <InstantSearch
@@ -113,14 +112,12 @@ class Refinements extends React.Component {
       Weight: {
         attributeName: 'weight',
         value: item =>
-          `From ${item.currentRefinement.min} lbs to ${item.currentRefinement
-            .max} lbs`,
+          `From ${item.currentRefinement.min} lbs to ${item.currentRefinement.max} lbs`,
       },
       Age: {
         attributeName: 'age',
         value: item =>
-          `From ${item.currentRefinement.min} years to ${item.currentRefinement
-            .max} years`,
+          `From ${item.currentRefinement.min} years to ${item.currentRefinement.max} years`,
       },
       ClearAll: {
         attributeName: 'clearAll',

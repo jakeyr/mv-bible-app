@@ -73,19 +73,18 @@ class Authorize extends Component {
         .then(function(response) {
             console.log("response from server", response);
             AsyncStorage.setItem(globalVariables.tokenKey, response.token)
-                .then(function () {
-                    console.info("setting up token in storage ", response.token);
-                    that.props.postLogin();
-                    that.setState({isLoading: false});
-                    Actions.Home({searchKey: response.token, type: ActionConst.REPLACE});
-                })
-                .catch((error) => {
-                    console.warn(error);
-                })
-                .done();
+            .then(function () {
+                console.info("token stored: ", response.token);
+                console.info("actions", Actions);
+                Actions.Home({searchKey: response.token, type: ActionConst.RESET, refresh: this.props})
+                console.info('Just jumped to home after token stored');
+            })
+            .catch((error) => {
+                console.warn(error);
+            });
         })
         .catch((error) => {
-            console.info(error);
+            console.warn(error);
             this.setState({isLoading: false});
         });
         this.setState({isLoading: true})
@@ -95,7 +94,7 @@ class Authorize extends Component {
         console.log(email);
     }
 
-    render() {
+    componentWillMount() {
         console.log("checking authorization status");
 
         // if we've already got a token, don't need login screen.
@@ -104,13 +103,15 @@ class Authorize extends Component {
         AsyncStorage.getItem(globalVariables.tokenKey)
         .then((value) => {
             console.log("token from storage:", value, globalVariables.requireLogin && value);
-            if (value || globalVariables.skipLogin) {
+            if (value && !globalVariables.forceLogin) {
                 console.log("found token in storage, skipping to app!");
-                this.props.postLogin();
-                Actions.Home({searchKey: value, type: ActionConst.REPLACE});
-             }
+                Actions.Home({searchKey: value, type: ActionConst.RESET, refresh: this.props})
+                console.log('Just jumped to home before Authorize mount');
+            }
         });
+    }
 
+    render() {
         if (this.state.isLoading) {
             return (
                 <View style={styles.loadingView}>
@@ -125,7 +126,7 @@ class Authorize extends Component {
                     <Text>Please log in with PetPoint...</Text>
                     <Login
                         labels={{userIdentification: 'PetPoint user name'}}
-                        userIdentificationInputIcon={{uri: "https://cdn0.iconfinder.com/data/icons/users-android-l-lollipop-icon-pack/24/user-128.png"}}
+                        userIdentificationInputIcon={{uri: globalVariables.userIcon}}
                         onLogin={this._onLogin}
                         onResetPassword={this._onResetPassword}
                         autoCapitalize="none"

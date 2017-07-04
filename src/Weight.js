@@ -59,9 +59,10 @@ class Filters extends Component {
           <Stats
             searchState={this.state.searchState}
             onSearchStateChange={this.onSearchStateChange}
+            searchKey={this.props.searchKey}
           />
           <VirtualRefinementList attributeName="breed" />
-          <VirtualMenu attributeName="size" />
+          <VirtualRefinementList attributeName="size" />
           <VirtualSearchBox />
         </InstantSearch>
       </View>
@@ -156,5 +157,4 @@ Weight.propTypes = {
 
 const VirtualRefinementList = connectRefinementList(() => null);
 const VirtualSearchBox = connectSearchBox(() => null);
-const VirtualMenu = connectMenu(() => null);
 const ConnectedRange = connectRange(Weight);
