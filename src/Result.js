@@ -117,20 +117,28 @@ const styles = StyleSheet.create({
         color: "#f5b600",
         flex: 1,
     },
+    iconBox: {
+        flex:1,
+        paddingLeft:20,
+        paddingRight:20,
+        paddingTop: 10,
+        paddingBottom: 10,
+        backgroundColor: "#fffcef"
+    },
+    iconRow : {
+        flex:1,
+        flexDirection:'row',
+        marginTop: 10,
+        marginBottom:10
+    },
+    separator: {
+        borderBottomColor: '#dddddd',
+        borderBottomWidth: 1,
+        marginLeft: 40,
+        marginRight: 40,
+        marginBottom: 15,
+    }
 });
-
-const Box = (props) =>
-    <View style={styles.boxContainer}>
-        <Text style={styles.boxValue}>{props.value}</Text>
-        <Text style={styles.boxLabel}>{props.label}</Text>
-    </View>
-
-const InfoIcon = (props) =>
-    <View style={styles.itemAttributes} key={props.icon}>
-        <Icon name={props.icon} size={35} color="#f5b600" />
-        <Text style={styles.itemInfoText1}>{props.text1 ? props.text1 : "?"} </Text>
-        <Text style={styles.itemInfoText2}>{props.text2}</Text>
-    </View>
 
 class Result extends Component {
 
@@ -150,16 +158,11 @@ class Result extends Component {
 
     componentWillMount() {
         // set the title to the name of the doggo
-        //
         Actions.refresh({title: this.props.hit.name})
     }
 
     render() {
         hit = this.props.hit;
-
-        weightStr = (hit.weight ? hit.weight : "?") + " lbs";
-        ageStr    = (hit.age ? hit.age : "?") + " years old";
-
         return <View style={styles.maincontainer}>
             <InstantSearch
                 appId="R80XXCZCBX"
@@ -180,18 +183,17 @@ class Result extends Component {
                         {hit.images
                             ? hit.images.map((image) => <CarouselImage image={image} key={image} maxHeight={500}/>)
                             : <CarouselImage image={globalVariables.placeHolderImage} key="placeholder" maxHeight={500}/>
-
                         }
                     </Swiper>
                     <View style={styles.infoContainer}>
                         <Text style={styles.itemName} numberOfLines={1}>{hit.name} ({hit.arn})</Text>
                     </View>
-                    <View style={{flex:1, paddingLeft:20, paddingRight:20, paddingTop: 10, paddingBottom: 10, backgroundColor: "#fffcef"}}>
-                        <View style={{flex:1, flexDirection:'row', marginTop: 10, marginBottom:10}}>
+                    <View style={styles.iconBox}>
+                        <View style={styles.iconRow}>
                             <InfoIcon key="size" icon="paw" text1={hit.size} />
                             <InfoIcon icon={"gender-" + hit.gender.toLowerCase()} text1={hit.gender} />
                         </View>
-                        <View style={{flex:1, flexDirection:'row', marginTop: 10, marginBottom:10}}>
+                        <View style={styles.iconRow}>
                             <InfoIcon key="weight" icon="scale-balance" text1={hit.weight} text2="pounds" />
                             <InfoIcon key="age" icon="clock" text1={hit.age} text2="years old" />
                         </View>
@@ -201,17 +203,7 @@ class Result extends Component {
                             ? (hit.comments.map((comment,index) =>
                                 <View key={"container"+index}>
                                     <Comment comment={comment} key={"comment"+index} style={styles.commentContainer} />
-                                    {index !== (hit.comments.length - 1)
-                                        ? <View key={"hr" + index}
-                                            style={{
-                                                borderBottomColor: '#dddddd',
-                                                borderBottomWidth: 1,
-                                                marginLeft: 40,
-                                                marginRight: 40,
-                                                marginBottom: 15,
-                                            }}
-                                        />
-                                    : <View/>}
+                                    {index !== (hit.comments.length - 1) ? <View style={styles.separator} /> : <View/>}
                                 </View>))
                             : <View style={styles.commentContainer}><Text>No Comments</Text></View>}
                     </View>
@@ -226,6 +218,14 @@ const Comment = (props) =>
         <Text style={styles.commentHeader}>{props.comment.author} ({moment(props.comment.time * 1000).fromNow()})</Text>
         <Text style={styles.commentText}>{props.comment.comment.trim()}</Text>
     </View>
+
+const InfoIcon = (props) =>
+    <View style={styles.itemAttributes} key={props.icon}>
+        <Icon name={props.icon} size={35} color="#f5b600" />
+        <Text style={styles.itemInfoText1}>{props.text1 ? props.text1 : "?"} </Text>
+        <Text style={styles.itemInfoText2}>{props.text2}</Text>
+    </View>
+
 
 Result.propTypes = {
     searchState: PropTypes.object,

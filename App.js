@@ -76,11 +76,11 @@ export default class App extends Component {
                         borderBottomColor: 'transparent',
                     }}
                     titleStyle={{
-                        color: globalVariables.textColor,
+                        color: globalVariables.navTextColor,
                         fontWeight: '800',
                         // fontFamily : 'comicsans',
                     }}
-                    leftButtonIconStyle = {{ tintColor: globalVariables.textColor }}
+                    leftButtonIconStyle = {{ tintColor: globalVariables.navTextColor }}
                 >
                     <Scene key="Authorize"
                            renderLeftButton={this.menuButton}

@@ -6,5 +6,5 @@ export default globalVariables = {
     placeHolderImage : 'https://dogtrekker.com/userfiles//muttville(2).jpg',
     textColor        : '#3f3f3f',
     textColorLight   : '#616161',
-
+    navTextColor     : "black",
 }
