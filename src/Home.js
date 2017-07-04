@@ -9,7 +9,6 @@ import {
     TextInput,
     Image,
     StatusBar,
-    Button,
     Platform,
     Dimensions,
     TouchableHighlight,
@@ -34,6 +33,7 @@ import IosIcon from 'react-native-vector-icons/Ionicons';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { Actions, ActionConst } from 'react-native-router-flux';
 import AwesomeIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Button } from "native-base";
 
 const { width, height } = Dimensions.get('window');
 
@@ -65,9 +65,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         backgroundColor: 'white',
-        padding: 5,
+        padding: 10,
         borderBottomColor: 'gray',
         borderBottomWidth: 1,
+        // paddingTop
     },
     sortBy: {
         flexDirection: 'row',
@@ -192,9 +193,11 @@ class Home extends Component {
                         <ConnectedStats />
                         <ConnectedSortBy
                             items={[
-                                { value: 'active-mutts', label: 'Featured' },
-                                { value: 'active-mutts-age-desc', label: 'Age desc' },
-                                { value: 'active-mutts-age-asc', label: 'Age asc' },
+                                { value: 'active-mutts', label: 'Newest first' },
+                                { value: 'active-mutts-age-desc', label: 'Oldest to youngest' },
+                                { value: 'active-mutts-age-asc', label: 'Youngest to oldest' },
+                                { value: 'active-mutts-weight-desc', label: 'Biggest to smallest' },
+                                { value: 'active-mutts-weight-asc', label: 'Smallest to Biggest' },
                             ]}
                             defaultRefinement={'active-mutts'}
                         />
@@ -203,7 +206,7 @@ class Home extends Component {
                             searchState={this.state.searchState}
                             onSearchStateChange={this.onSearchStateChange}
                         />
-                        </View>
+                    </View>
                     <ConnectedHits searchKey={this.props.searchKey} />
                     <VirtualRefinementList attributeName="breed" />
                     <VirtualRange attributeName="age" />
@@ -366,7 +369,7 @@ Hits.propTypes = {
 
 const ConnectedHits = connectInfiniteHits(Hits);
 const ConnectedStats = connectStats(({ nbHits }) =>
-    <Text style={{ paddingLeft: 8 }}>{nbHits} mutts found</Text>
+    <Text style={{ paddingLeft: 8, color: globalVariables.textColor }}>{nbHits} mutts found</Text>
 );
 
 const ConnectedSortBy = connectSortBy(
@@ -375,13 +378,13 @@ const ConnectedSortBy = connectSortBy(
             ? <IosIcon
                 size={13}
                 name="ios-arrow-down"
-                color="#000"
+                color={globalVariables.textColor}
                 style={styles.sortByArrow}
             />
             : <MaterialIcon
                 size={20}
                 name="arrow-drop-down"
-                color="#000"
+                color={globalVariables.textColor}
                 style={styles.sortByArrow}
             />;
         return (
@@ -412,7 +415,7 @@ const ConnectedSortBy = connectSortBy(
                         width: 200,
                         height: 110,
                     }}
-                    textStyle={{ fontSize: 15 }}
+                    textStyle={{ fontSize: 15, color: globalVariables.textColor }}
                 />
                 {icon}
             </View>
@@ -423,15 +426,17 @@ const ConnectedSortBy = connectSortBy(
 const Filters = connectCurrentRefinements(
     ({ items, searchState, onSearchStateChange, searchKey }) =>
         <Button
+            style={{backgroundColor: 'white'}}
             onPress={() =>
                 Actions.Filters({
                     searchState,
                     searchKey,
                     onSearchStateChange,
                 })}
-            title={`Filters (${items.length})`}
-            color="#162331"
-        />
+        >
+            <Text style={{fontSize: 15, color: globalVariables.textColor }}>Filters ({items.length})</Text>
+        </Button>
+
 );
 const VirtualRange = connectRange(() => null);
 const VirtualRefinementList = connectRefinementList(() => null);

@@ -30,6 +30,7 @@
     "react-instantsearch": "beta",
     "react-native": "^0.44.0",
     "react-native-cli": "^2.0.1",
+    "react-native-drawer": "^2.3.0",
     "react-native-modal-dropdown": "^0.4.2",
     "react-native-router-flux": "^3.39.2",
     "react-native-simple-login": "^1.1.0",
