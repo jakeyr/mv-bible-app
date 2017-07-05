@@ -38,7 +38,12 @@ const styles = StyleSheet.create({
         fontSize: 25,
         marginTop: 10,
         marginBottom: 5,
-        textAlign: 'center'
+        textAlign: 'center',
+        color: globalVariables.textColor,
+    },
+    itemBreed : {
+        fontWeight:'600',
+        color: globalVariables.textColorLight,
     },
     boxContainer : {
 
@@ -58,7 +63,7 @@ const styles = StyleSheet.create({
     },
     infoContainer: {
         flex: 1,
-        flexDirection: 'row',
+        flexDirection: 'column',
         backgroundColor: 'white',
         padding: 10,
         // shadowColor: 'black',
@@ -79,6 +84,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         justifyContent: 'flex-start',
         flex:1,
+        paddingBottom:15,
     },
     commentHeader : {
         fontSize: 16,
@@ -179,7 +185,7 @@ class Result extends Component {
                     contentOffset={{x: 0, y: -(Platform.OS !== 'ios' ? 54 : 64)}}
                 >
                     <StatusBar backgroundColor="blue" barStyle="light-content"/>
-                    <Swiper activeDotStyle={{backgroundColor: 'white'}} height={500} horizontal={true}>
+                    <Swiper activeDotStyle={{backgroundColor: globalVariables.muttvilleGold}} height={500} horizontal={true}>
                         {hit.images
                             ? hit.images.map((image) => <CarouselImage image={image} key={image} maxHeight={500}/>)
                             : <CarouselImage image={globalVariables.placeHolderImage} key="placeholder" maxHeight={500}/>
@@ -187,6 +193,7 @@ class Result extends Component {
                     </Swiper>
                     <View style={styles.infoContainer}>
                         <Text style={styles.itemName} numberOfLines={1}>{hit.name} ({hit.arn})</Text>
+                        <Text style={styles.itemBreed} numberOfLines={1}>{hit['structured-info'].primary_breed}</Text>
                     </View>
                     <View style={styles.iconBox}>
                         <View style={styles.iconRow}>
@@ -215,7 +222,7 @@ class Result extends Component {
 
 const Comment = (props) =>
     <View style={styles.commentContainer}>
-        <Text style={styles.commentHeader}>{props.comment.author} ({moment(props.comment.time * 1000).fromNow()})</Text>
+        <Text style={styles.commentHeader}>{props.comment.type} ({moment(props.comment.time * 1000).fromNow()})</Text>
         <Text style={styles.commentText}>{props.comment.comment.trim()}</Text>
     </View>
 
