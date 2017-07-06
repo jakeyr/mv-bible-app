@@ -7,6 +7,10 @@ import {
     StatusBar,
     ScrollView,
     Platform,
+    TouchableOpacity,
+    TouchableHighlight,
+    TouchableWithoutFeedback,
+    Linking,
 } from 'react-native';
 
 import Swiper from 'react-native-swiper'
@@ -15,12 +19,25 @@ import { Actions } from 'react-native-router-flux';
 import CarouselImage from './components/CarouselImage';
 import Dimensions from 'Dimensions';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import EntypoIcon from 'react-native-vector-icons/Entypo';
+import PhotoView from 'react-native-photo-view'
 
 import globalVariables from '../globals'
 
 const moment = require('moment');
 
 const {width, height} = Dimensions.get('window');
+
+const PNF = require('google-libphonenumber').PhoneNumberFormat;
+const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
+
+
+const metaStyles = {
+    center : {
+        textAlign:'center',
+        color: globalVariables.textColor
+    },
+};
 
 const styles = StyleSheet.create({
     carousel: {
@@ -61,7 +78,7 @@ const styles = StyleSheet.create({
         color: globalVariables.textColor,
         textAlign: 'center'
     },
-    infoContainer: {
+    nameContainer: {
         flex: 1,
         flexDirection: 'column',
         backgroundColor: 'white',
@@ -73,6 +90,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 5,
         justifyContent: 'center',
+        backgroundColor: "#fffcef",
     },
     commentContainer: {
         padding: 10,
@@ -122,6 +140,7 @@ const styles = StyleSheet.create({
         marginRight: 5,
         color: "#f5b600",
         flex: 1,
+        textAlign: 'center',
     },
     iconBox: {
         flex:1,
@@ -143,8 +162,65 @@ const styles = StyleSheet.create({
         marginLeft: 40,
         marginRight: 40,
         marginBottom: 15,
-    }
+    },
+    stage : {
+        ...metaStyles.center,
+        fontWeight: '800',
+        fontSize: 16,
+    },
+    location : {
+        ...metaStyles.center,
+        fontSize:16,
+        fontWeight:'600'
+    },
+    locationPrefix : {
+        ...metaStyles.center,
+        fontSize:16,
+        fontWeight:'300'
+    },
+    fosterName : {
+        ...metaStyles.center,
+        fontWeight: '600',
+        paddingBottom: 5,
+    },
+    fosterPhone : {
+        ...metaStyles.center,
+        color: "#5a86ff",
+        paddingBottom: 5,
+    },
+    fosterEmail : {
+        ...metaStyles.center,
+        color: "#5a86ff",
+        paddingBottom: 5,
+    },
+    fosterSeparator : {
+        borderBottomWidth:1,
+        borderColor:'#dddddd',
+        marginLeft: 50,
+        marginRight: 50,
+        marginTop: 15,
+        marginBottom: 15,
+    },
+    wrapper: {
+        backgroundColor: '#000',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0
+    },
+    slide: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    photo: {
+        width,
+        height,
+        flex: 1
+    },
 });
+
+const DOUBLE_PRESS_DELAY = 200;
 
 class Result extends Component {
 
@@ -155,7 +231,36 @@ class Result extends Component {
         this.onSearchStateChange = this.onSearchStateChange.bind(this);
         this.state = {
             searchState: this.props.searchState ? this.props.searchState : {},
-        };
+            showViewer: false,
+            showIndex: 0
+        }
+    }
+
+    doublePressWrap = (key,func) => {
+        return (e) => {
+            const now = new Date().getTime();
+            const keyStr = "lastPress" + key;
+            if (this[keyStr] && (now - this[keyStr]) < DOUBLE_PRESS_DELAY) {
+                delete this[keyStr];
+                func(e);
+            }
+            else {
+                this[keyStr] = now;
+            }
+        }
+    }
+
+    viewerPressHandle = () => {
+        this.setState({
+            showViewer: false
+        })
+    }
+
+    thumbPressHandle = (i) => {
+        this.setState({
+            showIndex: i,
+            showViewer: true
+        })
     }
 
     onSearchStateChange(nextState) {
@@ -167,8 +272,23 @@ class Result extends Component {
         Actions.refresh({title: this.props.hit.name})
     }
 
+    _generateDialString = (phoneStr) =>
+        phoneUtil.format(phoneUtil.parse(phoneStr, 'US'),PNF.RFC3966)
+
     render() {
-        hit = this.props.hit;
+        let hit = this.props.hit;
+        let si  = hit['structured-info'];
+
+        if (this.state.showViewer){
+            return <View style={{position: 'relative'}}>
+                <Viewer
+                    index={this.state.showIndex}
+                    pressHandle={this.doublePressWrap("viewer",this.viewerPressHandle)}
+                    imgList={hit.images}
+                />
+            </View>
+        }
+
         return <View style={styles.maincontainer}>
             <InstantSearch
                 appId="R80XXCZCBX"
@@ -187,13 +307,43 @@ class Result extends Component {
                     <StatusBar backgroundColor="blue" barStyle="light-content"/>
                     <Swiper activeDotStyle={{backgroundColor: globalVariables.muttvilleGold}} height={500} horizontal={true}>
                         {hit.images
-                            ? hit.images.map((image) => <CarouselImage image={image} key={image} maxHeight={500}/>)
+                            ? hit.images.map((image,i) =>
+                                <TouchableWithoutFeedback key={i} onPress={e => this.doublePressWrap("thumb",this.thumbPressHandle)(i)}>
+                                    <View><CarouselImage image={image} key={image} maxHeight={500}/></View>
+                                </TouchableWithoutFeedback>)
                             : <CarouselImage image={globalVariables.placeHolderImage} key="placeholder" maxHeight={500}/>
                         }
                     </Swiper>
-                    <View style={styles.infoContainer}>
+                    <View style={styles.nameContainer}>
                         <Text style={styles.itemName} numberOfLines={1}>{hit.name} ({hit.arn})</Text>
-                        <Text style={styles.itemBreed} numberOfLines={1}>{hit['structured-info'].primary_breed}</Text>
+                        <Text style={styles.itemBreed} numberOfLines={1}>{si.primary_breed}</Text>
+                    </View>
+                    <View style={{flex:1,padding:15,justifyContent:'center'}}>
+                        <Text style={styles.stage}>{si.stage}</Text>
+                        <View style={styles.fosterSeparator}/>
+                        <View style={{flexDirection:'row',justifyContent:'center',alignItems:'flex-end',marginBottom:5}}>
+                            <Text style={styles.locationPrefix}>Currently at</Text>
+                            <Text style={styles.location}> {si.location}</Text>
+                        </View>
+                        {si.foster_person_first_name
+                            ? <View>
+                                <Text style={styles.fosterName}>{si.foster_person_first_name} {si.foster_person_last_name}</Text>
+                                <TouchableOpacity
+                                    onPress={()=>
+                                        Linking.openURL(this._generateDialString(si.foster_person_phone_primary))
+                                            .catch(err => console.info('An error occurred', err))}
+                                >
+                                    <Text style={styles.fosterPhone}>{si.foster_person_phone_primary}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={()=>
+                                        Linking.openURL(`mailto:${si.foster_person_email_primary}`)
+                                            .catch(err => console.info('An error occurred', err))}
+                                >
+                                    <Text style={styles.fosterEmail}>{si.foster_person_email_primary}</Text>
+                                </TouchableOpacity>
+                              </View>
+                            : <View/>}
                     </View>
                     <View style={styles.iconBox}>
                         <View style={styles.iconRow}>
@@ -228,11 +378,56 @@ const Comment = (props) =>
 
 const InfoIcon = (props) =>
     <View style={styles.itemAttributes} key={props.icon}>
-        <Icon name={props.icon} size={35} color="#f5b600" />
+        {props.entypo
+            ? <EntypoIcon name={props.icon} size={35} color="#f5b600" />
+            : <Icon name={props.icon} size={35} color="#f5b600" />}
         <Text style={styles.itemInfoText1}>{props.text1 ? props.text1 : "?"} </Text>
         <Text style={styles.itemInfoText2}>{props.text2}</Text>
     </View>
 
+const renderPagination = (index, total, context) => {
+    return (
+        <View style={{
+            position: 'absolute',
+            justifyContent: 'center',
+            alignItems: 'center',
+            top: 125,
+            left: 0,
+            right: 0
+        }}>
+            <View style={{
+                borderRadius: 7,
+                backgroundColor: 'rgba(255,255,255,.15)',
+                padding: 3,
+                paddingHorizontal: 7
+            }}>
+                <Text style={{
+                    color: '#fff',
+                    fontSize: 14
+                }}>{index + 1} / {total}</Text>
+            </View>
+        </View>
+    )
+}
+
+const Viewer = props => {
+    console.log(props);
+    return <Swiper index={props.index} style={styles.wrapper} renderPagination={renderPagination}>
+        {props.imgList.map((item, i) =>
+            <View key={i} style={styles.slide}>
+                <PhotoView
+                    {...props}
+                    onTap={props.pressHandle}
+                    source={{uri: item}}
+                    resizeMode='contain'
+                    minimumZoomScale={0.5}
+                    maximumZoomScale={3}
+                    androidScaleType='center'
+                    style={styles.photo}/>
+            </View>
+        )}
+    </Swiper>
+}
 
 Result.propTypes = {
     searchState: PropTypes.object,

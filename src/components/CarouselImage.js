@@ -20,7 +20,7 @@ class CarouselImage extends Component {
                 <Image
                     style={{
                         height: this.props.maxHeight,
-                        resizeMode: 'contain',
+                        resizeMode: 'cover',
                     }}
                     source={{uri: this.props.image}}/>
             </View>

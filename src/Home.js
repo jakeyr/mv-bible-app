@@ -190,7 +190,7 @@ class Home extends Component {
                         <ConnectedStats />
                         <ConnectedSortBy
                             items={[
-                                { value: 'active-mutts', label: 'Newest first' },
+                                { value: 'active-mutts', label: 'Most relevant' },
                                 { value: 'active-mutts-age-desc', label: 'Oldest first' },
                                 { value: 'active-mutts-age-asc', label: 'Youngest first' },
                                 { value: 'active-mutts-weight-desc', label: 'Biggest first' },
